@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using DataModel;
 
@@ -22,6 +23,7 @@ namespace WpfBackground
                 Shutdown();
                 return;
             }
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             AppHelper.RegisterAutoRestart(()=>
             {
@@ -33,21 +35,44 @@ namespace WpfBackground
             });
             Clipboards.StartListen();
             TryConnect();
+            Clipboards.Changed += Clipboards_Changed;
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception exp = (Exception)e.ExceptionObject;
+            MessageBox.Show(exp.Message);
+        }
+
+        private void Clipboards_Changed()
+        {
+            if (AppServiceConnect.IsOpen)
+            {
+                AppServiceConnect.Send(new RequestData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
+            }
         }
 
         private async void TryConnect()
         {
             if (!AppServiceConnect.IsOpen)
             {
-                AppServiceConnect.Received += AppServiceConnect_Received1;
+                AppServiceConnect.Received += AppServiceConnect_Received;
+                AppServiceConnect.Closed += AppServiceConnect_Closed;
                 await AppServiceConnect.OpenConnection(AppServerName);
             }
         }
 
-        private void AppServiceConnect_Received1(RequestData obj)
+        private void AppServiceConnect_Closed()
+        {
+            AppServiceConnect.Received -= AppServiceConnect_Received;
+            AppServiceConnect.Closed -= AppServiceConnect_Closed;
+            TryConnect();
+        }
+
+        private void AppServiceConnect_Received(AnswerData obj)
         {
             switch (obj.Request)
             {
@@ -55,12 +80,18 @@ namespace WpfBackground
                     WpfWindow.ShowWindow();
                     break;
                 case Request.ShutDown:
-                    Shutdown();
+                    ShutDown();
                     break;
                 case Request.AskClipboardList:
-                    AppServiceConnect.Send(new AnswerData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
+                    AppServiceConnect.Send(new RequestData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
                     break;
             }
+        }
+
+        public static void ShutDown()
+        {
+            AppServiceConnect.DisposeConnection();
+            App.Current.Shutdown();
         }
     }
 }

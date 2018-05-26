@@ -38,8 +38,9 @@
     <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>zh-CN</DefaultLanguage>
-    <PackageCertificateKeyFile>Clipboards_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Clipboards_StoreKey.pfx</PackageCertificateKeyFile>
     <EntryPointProjectUniqueName>..\UWPUI\UWPUI.csproj</EntryPointProjectUniqueName>
+    <PackageCertificateThumbprint>DF5CF7861F9801BDFFEB2DFF321DEE7835212E8E</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -48,12 +49,14 @@
     <None Include="Clipboards_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Clipboards_StoreKey.pfx" />
     <Content Include="Images\LockScreenLogo.scale-200.png" />
     <Content Include="Images\Square150x150Logo.scale-200.png" />
     <Content Include="Images\Square44x44Logo.scale-200.png" />
     <Content Include="Images\Square44x44Logo.targetsize-24_altform-unplated.png" />
     <Content Include="Images\StoreLogo.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UWPUI\UWPUI.csproj" />

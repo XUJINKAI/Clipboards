@@ -25,7 +25,26 @@ namespace UWPUI
         public MainPage()
         {
             this.InitializeComponent();
-            Interop.LaunchBackgroundProcess();
+            rootFrame.Navigate(typeof(ClipboardContentPage));
+        }
+
+        private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.IsSettingsSelected)
+            {
+                rootFrame.Navigate(typeof(SettingPage));
+            }
+            else
+            {
+                NavigationViewItem item = (NavigationViewItem)args.SelectedItem;
+                string tag = item.Tag as string;
+                switch (tag)
+                {
+                    case "ClipboardContentPage":
+                        rootFrame.Navigate(typeof(ClipboardContentPage));
+                        break;
+                }
+            }
         }
     }
 }

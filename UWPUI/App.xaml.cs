@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Windows.ApplicationModel.AppService;
+using Windows.ApplicationModel.Background;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using DataModel;
+using Windows.UI.Popups;
+using Windows.UI.Core;
 
 namespace UWPUI
 {
@@ -22,6 +17,11 @@ namespace UWPUI
     /// </summary>
     sealed partial class App : Application
     {
+        public static bool IsConnected { get; private set; } = false;
+        public static BackgroundTaskDeferral AppServiceDeferral = null;
+        private static AppServiceConnection Connection = null;
+        public static event Action<AnswerData> Recived;
+
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -30,6 +30,85 @@ namespace UWPUI
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.UnhandledException += App_UnhandledException;
+        }
+
+        private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            await (new MessageDialog(e.Message)).ShowAsync();
+        }
+
+        public static async void Send(RequestData requestData)
+        {
+            if (!IsConnected)
+            {
+                await Interop.LaunchBackgroundProcessAsync();
+            }
+            if (IsConnected)
+            {
+                var result = await Connection.SendMessageAsync(requestData.ToValueSet());
+#if DEBUG
+                await (new MessageDialog($"Request: {requestData.Request}\r\nStatus: {result.Status}")).ShowAsync();
+#endif
+            }
+            else
+            {
+                await (new MessageDialog("Not Connected")).ShowAsync();
+            }
+        }
+
+        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            // connection established from the fulltrust process
+            if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
+            {
+                AppServiceDeferral = args.TaskInstance.GetDeferral();
+                args.TaskInstance.Canceled += OnAppServiceCanceled;
+
+                if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails details)
+                {
+                    Connection = details.AppServiceConnection;
+                    IsConnected = true;
+                    Connection.RequestReceived += Connection_RequestReceived;
+                }
+            }
+        }
+
+        private async void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+               Recived?.Invoke(args.Request.Message.ToAnswerData());
+            });
+        }
+
+        private void OnAppServiceCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
+        {
+            IsConnected = false;
+            if (AppServiceDeferral != null)
+            {
+                AppServiceDeferral.Complete();
+            }
+        }
+        
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            if (args.Kind == ActivationKind.Protocol)
+            {
+                Frame rootFrame = Window.Current.Content as Frame;
+                if (rootFrame == null)
+                {
+                    rootFrame = new Frame();
+                    rootFrame.NavigationFailed += OnNavigationFailed;
+                    Window.Current.Content = rootFrame;
+                }
+                if (rootFrame.Content == null)
+                {
+                    rootFrame.Navigate(typeof(MainPage));
+                }
+            }
+            Window.Current.Activate();
         }
 
         /// <summary>

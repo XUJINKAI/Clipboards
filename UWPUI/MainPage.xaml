@@ -7,8 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    
     <Grid>
-
+        <NavigationView x:Name="MainNavigationView" IsSettingsVisible="True" IsBackButtonVisible="Collapsed"
+                        SelectionChanged="MainNavigationView_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Clipboard Content" Tag="ClipboardContentPage" />
+            </NavigationView.MenuItems>
+            <Frame x:Name="rootFrame">
+            </Frame>
+        </NavigationView>
     </Grid>
 </Page>

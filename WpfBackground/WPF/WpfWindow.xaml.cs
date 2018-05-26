@@ -8,7 +8,12 @@ namespace WpfBackground
     /// </summary>
     public partial class WpfWindow : Window
     {
-        public static WpfWindow Instance;
+        public static WpfWindow Instance = null;
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Instance = null;
+        }
 
         public static void ShowWindow()
         {
@@ -23,25 +28,30 @@ namespace WpfBackground
         public WpfWindow()
         {
             InitializeComponent();
-            Instance = this;
+            ClipboardsListView.ItemsSource = Clipboards.TextList;
             Clipboards.Changed += Clipboards_Changed;
         }
-
+        
         private void Clipboards_Changed()
         {
             ClipboardsListView.ItemsSource = null;
             ClipboardsListView.ItemsSource = Clipboards.TextList;
         }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
-            Shutdown();
-        }
-
+        
         private void Shutdown()
         {
-            App.Current.Shutdown();
+            App.ShutDown();
+        }
+
+        private async void OpenConnect(object sender, RoutedEventArgs e)
+        {
+            var result = await AppServiceConnect.OpenConnection(App.AppServerName);
+            MessageBox.Show(result);
+        }
+
+        private void Exit(object sender, RoutedEventArgs e)
+        {
+            Shutdown();
         }
     }
 }

@@ -13,5 +13,10 @@ namespace UWPUI
         {
             await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
         }
+
+        public static async Task LaunchBackgroundProcessAsync()
+        {
+            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
+        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using DataModel;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
+using System.Windows;
+using System.Windows.Threading;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
 
@@ -13,18 +13,27 @@ namespace WpfBackground
         public static bool IsOpen => _connection != null;
         public static AppServiceConnection _connection = null;
 
-        public static event Action<RequestData> Received;
+        public static event Action<AnswerData> Received;
         public static event Action Closed;
 
         private static void OnReceived(ValueSet set)
         {
-            Received?.Invoke(new RequestData(set["Request"] as string, set["Data"] as string));
+#if DEBUG
+            MessageBox.Show(set.ToAnswerData().Request.ToString());
+#endif
+            Dispatcher.CurrentDispatcher.Invoke(new Action(() =>
+            {
+                Received?.Invoke(set.ToAnswerData());
+            }));
         }
 
         public static void DisposeConnection()
         {
-            _connection.Dispose();
-            _connection = null;
+            if (_connection != null)
+            {
+                _connection.Dispose();
+                _connection = null;
+            }
         }
 
         public static async Task<string> OpenConnection(string AppServiceName, string PackageFamilyName = null)
@@ -35,11 +44,8 @@ namespace WpfBackground
             }
             if (string.IsNullOrEmpty(PackageFamilyName))
             {
-#if DEBUG
-                PackageFamilyName = "FakePackageFamilyName";
-#else
-                PackageFamilyName = Package.Current.Id.FamilyName;
-#endif
+                //PackageFamilyName = Package.Current.Id.FamilyName;
+                PackageFamilyName = "55774JinkaiXu.57013CAEE6225_p5dcp4q3yn5jt";
             }
             _connection = new AppServiceConnection
             {
@@ -53,6 +59,9 @@ namespace WpfBackground
             {
                 DisposeConnection();
             }
+#if DEBUG
+            MessageBox.Show(status.ToString());
+#endif
             return status.ToString();
         }
 
@@ -67,19 +76,17 @@ namespace WpfBackground
             OnReceived(args.Request.Message);
         }
 
-        public static async void Send(AnswerData answerData)
+        public static async void Send(RequestData requestData)
         {
-            var set = new ValueSet
-            {
-                { "Request", answerData.Request.ToString() },
-                { "Data", answerData.Data.ToXmlText() }
-            };
-
+            var set = requestData.ToValueSet();
             var response = await _connection.SendMessageAsync(set);
             if (response.Message != null)
             {
                 OnReceived(response.Message);
             }
+#if DEBUG
+            MessageBox.Show($"Request: {requestData.Request}\r\nStatus: {response.Status}");
+#endif
         }
     }
 }

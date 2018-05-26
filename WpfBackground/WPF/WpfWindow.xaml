@@ -7,7 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <ListView x:Name="ClipboardsListView">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Click="OpenConnect">Connet</Button>
+            <Button Click="Exit">Exit</Button>
+        </StackPanel>
+        <ListView x:Name="ClipboardsListView" Grid.Row="1">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Text" Width="300">

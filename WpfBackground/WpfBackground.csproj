@@ -73,6 +73,7 @@
     <Compile Include="AppHelper.cs" />
     <Compile Include="AppServiceConnect.cs" />
     <Compile Include="Clipboards.cs" />
+    <Compile Include="DataModelValueSetExtension.cs" />
     <Compile Include="WPF\WpfWindow.xaml.cs">
       <DependentUpon>WpfWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

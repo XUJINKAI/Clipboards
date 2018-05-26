@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace DataModel
 {
@@ -14,29 +15,35 @@ namespace DataModel
 
     public class RequestData : ConnectionDataStruct
     {
-        public RequestData(string arg1, string arg2)
+        public RequestData()
+            : this(Request.None, null)
         {
-            Request = (Request)Enum.Parse(typeof(Request), arg1);
-            switch (Request)
+
+        }
+
+        public RequestData(Request request)
+            : this(request, null)
+        {
+
+        }
+
+        public RequestData(Request request, ExChangeDataBase data)
+        {
+            Request = request;
+            if (data != null)
             {
-                case Request.AnsClipboardList:
-                    Data = XmlSerialization.FromXmlText<ExClipboardList>(arg2);
-                    break;
-                default:
-                    Data = new ExChangeDataBase();
-                    break;
+                Data = data;
             }
         }
     }
 
     public class AnswerData : ConnectionDataStruct
     {
-        public AnswerData(Request request, ExChangeDataBase data)
-        {
-            Request = Request;
-            Data = data;
-        }
+
     }
+
+    [XmlInclude(typeof(ExClipboardList))]
+    public class ExChangeDataBase { }
 
     public class ExClipboardList : ExChangeDataBase
     {
