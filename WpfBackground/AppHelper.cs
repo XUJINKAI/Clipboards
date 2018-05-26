@@ -123,11 +123,13 @@ namespace WpfBackground
 
         public AppHelperWindow()
         {
+            Visibility = Visibility.Hidden;
+            Opacity = 0;
             Top = 0;
             Left = 0;
-            Width = 1;
-            Height = 1;
-            Content = new Grid();
+            Width = 0;
+            Height = 0;
+            WindowStyle = WindowStyle.ToolWindow;
         }
 
         protected override void OnSourceInitialized(EventArgs e)

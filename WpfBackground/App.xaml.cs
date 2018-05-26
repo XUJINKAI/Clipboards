@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
+using DataModel;
 
 namespace WpfBackground
 {
@@ -13,8 +9,9 @@ namespace WpfBackground
     /// </summary>
     public partial class App : Application
     {
-        public static string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
-        public static string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
+        public const string AppServerName = "ClipboardsBackgroundAppService";
+        public const string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
+        public const string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -32,11 +29,38 @@ namespace WpfBackground
             });
             AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
             {
-                WpfWindow.Instance.Title = "x";
+                TryConnect();
             });
+            Clipboards.StartListen();
+            TryConnect();
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
+        }
+
+        private async void TryConnect()
+        {
+            if (!AppServiceConnect.IsOpen)
+            {
+                AppServiceConnect.Received += AppServiceConnect_Received1;
+                await AppServiceConnect.OpenConnection(AppServerName);
+            }
+        }
+
+        private void AppServiceConnect_Received1(RequestData obj)
+        {
+            switch (obj.Request)
+            {
+                case Request.ShowWpfWindow:
+                    WpfWindow.ShowWindow();
+                    break;
+                case Request.ShutDown:
+                    Shutdown();
+                    break;
+                case Request.AskClipboardList:
+                    AppServiceConnect.Send(new AnswerData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
+                    break;
+            }
         }
     }
 }
