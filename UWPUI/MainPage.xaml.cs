@@ -25,6 +25,7 @@ namespace UWPUI
         public MainPage()
         {
             this.InitializeComponent();
+            Interop.LaunchBackgroundProcess();
         }
     }
 }

@@ -18,11 +18,25 @@ namespace WpfBackground
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class WpfWindow : Window
     {
-        public MainWindow()
+        public static WpfWindow Instance;
+
+        public static void ShowWindow()
+        {
+            if(Instance == null)
+            {
+                Instance = new WpfWindow();
+            }
+            Instance.Show();
+            Instance.Activate();
+        }
+
+        public WpfWindow()
         {
             InitializeComponent();
+            Instance = this;
         }
+
     }
 }
