@@ -106,6 +106,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common\Common.csproj">
+      <Project>{3dcc2108-7abe-4c3d-91b4-5e2542071999}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>
       <Name>DataModel</Name>
