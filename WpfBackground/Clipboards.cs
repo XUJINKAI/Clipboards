@@ -8,6 +8,7 @@ namespace WpfBackground
 {
     static class Clipboards
     {
+        public static event Action Changed;
         public static bool Listenning { get; private set; } = false;
 
         public static List<string> TextList;
@@ -53,6 +54,7 @@ namespace WpfBackground
                         TextList.RemoveAt(0);
                     }
                     TextList.Add(text);
+                    Changed?.Invoke();
                 }
             }
         }

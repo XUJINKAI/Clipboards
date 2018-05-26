@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WpfBackground
 {
@@ -36,6 +24,24 @@ namespace WpfBackground
         {
             InitializeComponent();
             Instance = this;
+            Clipboards.Changed += Clipboards_Changed;
+        }
+
+        private void Clipboards_Changed()
+        {
+            ClipboardsListView.ItemsSource = null;
+            ClipboardsListView.ItemsSource = Clipboards.TextList;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            Shutdown();
+        }
+
+        private void Shutdown()
+        {
+            App.Current.Shutdown();
         }
     }
 }

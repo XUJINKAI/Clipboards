@@ -35,7 +35,11 @@ namespace WpfBackground
             }
             if (string.IsNullOrEmpty(PackageFamilyName))
             {
+#if DEBUG
+                PackageFamilyName = "FakePackageFamilyName";
+#else
                 PackageFamilyName = Package.Current.Id.FamilyName;
+#endif
             }
             _connection = new AppServiceConnection
             {
