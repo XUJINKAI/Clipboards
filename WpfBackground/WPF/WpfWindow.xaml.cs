@@ -38,5 +38,9 @@ namespace WpfBackground
             Instance = this;
         }
 
+        private void Shutdown(object sender, RoutedEventArgs e)
+        {
+            App.Current.Shutdown();
+        }
     }
 }

@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel>
+            <Button Click="Shutdown">Shutdown</Button>
+        </StackPanel>
     </Grid>
 </Window>

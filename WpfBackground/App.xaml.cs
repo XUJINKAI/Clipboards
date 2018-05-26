@@ -13,9 +13,27 @@ namespace WpfBackground
     /// </summary>
     public partial class App : Application
     {
+        public static string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
+        public static string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            if (!AppHelper.IsNewInstance(AppUniqueId))
+            {
+                AppHelper.BroadcastMessage(MsgConnectAppService);
+                Shutdown();
+                return;
+            }
+            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            AppHelper.RegisterAutoRestart(()=>
+            {
+                Shutdown();
+            });
+            AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
+            {
+                WpfWindow.Instance.Title = "x";
+            });
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
