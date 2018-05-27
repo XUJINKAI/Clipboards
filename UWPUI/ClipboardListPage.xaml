@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="UWPUI.ClipboardListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UWPUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+            <local:TextDisplayConverter x:Key="TextDisplay"></local:TextDisplayConverter>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <CommandBar Background="Transparent">
+            <AppBarButton x:Name="TopmostButton" Icon="UnPin" Label="Topmost" Click="TopmostToggle"/>
+            <AppBarSeparator></AppBarSeparator>
+            <AppBarButton Icon="Copy" Label="Copy" Click="CopySelect"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Refresh" Label="Refresh" Click="GetList"></AppBarButton>
+                <AppBarButton Icon="Clear" Label="Clear" Click="ClearLists"></AppBarButton>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <ListView x:Name="ClipboardListView" Grid.Row="1"
+                          SelectionMode="Multiple">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock Text="{Binding Text, Converter={StaticResource TextDisplay}}"
+                                   Grid.Column="1" TextWrapping="Wrap"
+                                   Tag="{Binding Text}"
+                                   DoubleTapped="ClipboardItem_DoubleTapped"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </Grid>
+</Page>

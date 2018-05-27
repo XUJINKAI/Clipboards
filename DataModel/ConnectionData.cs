@@ -7,11 +7,11 @@ namespace DataModel
         /*
          * 更新字段，要更新 ConnectionDataValueSetExtension.cs 文件
          */
-        public const string C_DIRECTION = "Direction";
+        public const string C_Type = "Type";
         public const string C_COMMAND = "Command";
         public const string C_DATA = "Data";
 
-        public Direction Direction { get; set; } = Direction.None;
+        public MsgType Type { get; set; } = MsgType.None;
         public Command Command { get; set; } = Command.None;
         public ExChangeData Data { get; set; } = null;
 
@@ -24,22 +24,22 @@ namespace DataModel
 
         }
 
-        public ConnectionData(Direction direct, Command cmd)
+        public ConnectionData(MsgType type, Command cmd)
         {
+            Type = type;
             Command = cmd;
-            Direction = direct;
         }
 
-        public ConnectionData(Direction direct, Command cmd, ExChangeData data)
+        public ConnectionData(MsgType type, Command cmd, ExChangeData data)
         {
+            Type = type;
             Command = cmd;
-            Direction = direct;
             Data = data;
         }
 
         public override string ToString()
         {
-            return $"{Direction}: {Command}";
+            return $"{Type}: {Command}, ({Boolean}, {Integer}, {Text})";
         }
     }
 

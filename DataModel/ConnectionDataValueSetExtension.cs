@@ -10,7 +10,7 @@ namespace DataModel
         {
             var set = new ValueSet
             {
-                { ConnectionData.C_DIRECTION, data.Direction.ToString() },
+                { ConnectionData.C_Type, data.Type.ToString() },
                 { ConnectionData.C_COMMAND, data.Command.ToString() },
                 { ConnectionData.C_DATA, data.Data.ToXmlText() },
                 { "Integer", data.Integer },
@@ -22,14 +22,14 @@ namespace DataModel
 
         public static ConnectionData ToConnectionData(this ValueSet set)
         {
-            if (set.ContainsKey(ConnectionData.C_DIRECTION))
+            if (set.ContainsKey(ConnectionData.C_Type))
             {
-                var dir = (Direction)Enum.Parse(typeof(Direction), set[ConnectionData.C_DIRECTION] as string);
+                var dir = (MsgType)Enum.Parse(typeof(MsgType), set[ConnectionData.C_Type] as string);
                 var req = (Command)Enum.Parse(typeof(Command), set[ConnectionData.C_COMMAND] as string);
                 var dat = XmlSerialization.FromXmlText<ExChangeData>(set[ConnectionData.C_DATA] as string);
                 return new ConnectionData
                 {
-                    Direction = dir,
+                    Type = dir,
                     Command = req,
                     Data = dat,
                     Integer = (int)set["Integer"],

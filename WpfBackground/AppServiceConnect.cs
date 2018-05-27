@@ -28,22 +28,17 @@ namespace WpfBackground
         {
             if (!IsConnected)
             {
-                await ConnectionAsync(App.AppServerName);
+                await ConnectionAsync(App.AppServerName, App.PackageFamilyName);
             }
         }
 
-        public static async Task<string> ConnectionAsync(string AppServiceName, string PackageFamilyName = null)
+        public static async Task<string> ConnectionAsync(string AppServiceName, string PackageFamilyName)
         {
             if (_connection != null)
             {
                 DisposeConnection();
             }
             Log.Info("Connecting");
-            if (string.IsNullOrEmpty(PackageFamilyName))
-            {
-                PackageFamilyName = Windows.ApplicationModel.Package.Current.Id.FamilyName;
-                //PackageFamilyName = "55774JinkaiXu.57013CAEE6225_p5dcp4q3yn5jt";
-            }
             _connection = new AppServiceConnection
             {
                 AppServiceName = AppServiceName,

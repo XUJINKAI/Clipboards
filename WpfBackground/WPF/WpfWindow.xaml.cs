@@ -63,7 +63,7 @@ namespace WpfBackground
 
         private async void OpenConnect(object sender, RoutedEventArgs e)
         {
-            var result = await AppServiceConnect.ConnectionAsync(App.AppServerName);
+            var result = await AppServiceConnect.ConnectionAsync(App.AppServerName, App.PackageFamilyName);
             MessageBox.Show(result);
         }
 

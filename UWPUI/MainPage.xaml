@@ -6,40 +6,20 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Width="768">
-    
-    <Grid>
-        <Pivot x:Name="MainPivot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <PivotItem x:Name="HistoryPivotItem" Header="History">
-                <ListView x:Name="ClipboardListView"
-                          SelectionMode="Single">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="{Binding}" DoubleTapped="TextBlock_DoubleTapped"></TextBlock>
-                                <Grid Height="20"></Grid>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </PivotItem>
-            <PivotItem x:Name="SettingPivotItem" Header="Setting">
-                <StackPanel>
-                    <TextBox Header="Github" Text="https://github.com/xujinkai-net/" IsReadOnly="True"></TextBox>
-                    <TextBox Header="Command Protocol" Text="clipboards:" IsReadOnly="True"></TextBox>
-                    <TextBox Header="OneQuick Tool" Text="clipboards:" IsReadOnly="True"></TextBox>
-                    <TextBox Header="PackageFamilyName" x:Name="PackageFamilyNameTextBox" IsReadOnly="True"></TextBox>
-                    <Button Click="ShowWpfWindow">Show WPF</Button>
-                    <Button Click="ExitBackground">Exit</Button>
-                </StackPanel>
-            </PivotItem>
-            <PivotItem x:Name="LogPivotItem" Header="Log">
-                <TextBlock x:Name="LogTextBox"/>
-            </PivotItem>
-        </Pivot>
-    </Grid>
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <NavigationView IsBackButtonVisible="Collapsed" 
+                    CompactModeThresholdWidth="800"
+                    ExpandedModeThresholdWidth="600"
+                    OpenPaneLength="180"
+                    SelectionChanged="NavigationView_SelectionChanged">
+        <NavigationView.MenuItems>
+            <!--https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.symbol-->
+            <NavigationViewItem Icon="AlignCenter" Content="History" Tag="History" />
+            <NavigationViewItemSeparator/>
+            <NavigationViewItem Icon="Edit" Content="Log" Tag="Log" />
+        </NavigationView.MenuItems>
+        <Frame x:Name="rootFrame">
+        </Frame>
+    </NavigationView>
 </Page>

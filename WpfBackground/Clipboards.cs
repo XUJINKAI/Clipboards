@@ -52,6 +52,8 @@ namespace WpfBackground
                 if (dataPackageView.Contains(StandardDataFormats.Text))
                 {
                     var text = await dataPackageView.GetTextAsync();
+                    //TODO
+                    if (text.Length > 10000) { return; }
                     if (TextList.Contains(text))
                     {
                         TextList.Remove(text);

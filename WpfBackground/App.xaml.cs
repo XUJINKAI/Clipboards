@@ -10,6 +10,7 @@ namespace WpfBackground
     public partial class App : Application
     {
         public const string AppServerName = "ClipboardsBackgroundAppService";
+        public const string PackageFamilyName = "55774JinkaiXu.57013CAEE6225_p5dcp4q3yn5jt";
         public const string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
         public const string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
 

@@ -26,7 +26,7 @@ namespace UWPUI
                 Log.Info("Connection change: " + s_isConnected.ToString());
                 if (value)
                 {
-                    AppServer.RequestLists();
+                    AppServer.RequestGetClipboardList();
                 }
             }
         }
@@ -49,6 +49,7 @@ namespace UWPUI
         public static async void InitBackground()
         {
             await Interop.LaunchBackgroundProcessAsync();
+            AppServer.Init();
         }
 
         public static async void Send(ConnectionData data)
@@ -60,7 +61,7 @@ namespace UWPUI
             if (IsConnected)
             {
                 var result = await App.Connection.SendMessageAsync(data.ToValueSet());
-                Log.Verbose($"{data.Direction}: {data.Command}\r\nStatus: {result.Status}");
+                Log.Verbose($"{data.Type}: {data.Command}\r\nStatus: {result.Status}");
             }
             else
             {

@@ -4,13 +4,12 @@ using System.Text;
 
 namespace DataModel
 {
-    public enum Direction
+    public enum MsgType
     {
         None,
-        AskServer,
-        UpdateServer,
-        AskUi,
-        UpdateUi,
+        Query,
+        Set,
+        Confirm,
     }
 
     public enum Command
@@ -19,7 +18,7 @@ namespace DataModel
         IsOpen,
         ShowWindow,
         ShutDown,
-        SetTopmost,
+        Topmost,
         ClipboardList,
         AddClipboardItem,
         ClearClipboardList,

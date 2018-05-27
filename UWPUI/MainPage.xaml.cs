@@ -9,6 +9,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using DataModel;
+using Windows.UI.Xaml.Controls.Primitives;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -17,69 +18,34 @@ namespace UWPUI
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class MainPage : Page, INotifyPropertyChanged
+    public sealed partial class MainPage : Page
     {
-        public static MainPage Instance;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string Name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
-        }
-
-        public static ObservableCollection<string> ClipboardText = new ObservableCollection<string>();
-
         public MainPage()
         {
             this.InitializeComponent();
-            Log.AutoStringListener += Log_AutoStringListener;
-            Log.AutoFlush = true;
-            Instance = this;
-            PackageFamilyNameTextBox.Text = Windows.ApplicationModel.Package.Current.Id.FamilyName;
-            ClipboardListView.ItemsSource = ClipboardText;
-        }
-        
-        private void Log_AutoStringListener(string obj)
-        {
-            LogTextBox.Text += obj;
+            rootFrame.Navigate(typeof(ClipboardListPage));
         }
 
-        public void AddClipboardList(string text)
+        private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            if (!ClipboardText.Contains(text))
+            if (args.IsSettingsSelected)
             {
-                ClipboardText.Insert(0, text);
+                rootFrame.Navigate(typeof(SettingPage));
+            }
+            else
+            {
+                var item = (NavigationViewItem)args.SelectedItem;
+                var tag = item.Tag as string;
+                switch (tag)
+                {
+                    case "History":
+                        rootFrame.Navigate(typeof(ClipboardListPage));
+                        break;
+                    case "Log":
+                        rootFrame.Navigate(typeof(LogPage));
+                        break;
+                }
             }
         }
-
-        public void SetClipboardList(List<string> data)
-        {
-            data.Reverse();
-            ClipboardText.Clear();
-            foreach(var x in data)
-            {
-                ClipboardText.Add(x);
-            }
-        }
-
-        private void ExitBackground(object sender, RoutedEventArgs e)
-        {
-            App.Send(new ConnectionData(Direction.AskServer, Command.ShutDown));
-            App.Current.Exit();
-        }
-
-        private void ShowWpfWindow(object sender, RoutedEventArgs e)
-        {
-            App.Send(new ConnectionData(Direction.AskServer, Command.ShowWindow));
-        }
-
-        private void TextBlock_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
-        {
-            var TextBlock = (TextBlock)sender;
-            var data = new DataPackage();
-            data.SetText(TextBlock.Text);
-            Clipboard.SetContent(data);
-        }
-        
     }
 }
