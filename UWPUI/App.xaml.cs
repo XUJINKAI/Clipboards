@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Navigation;
 using DataModel;
 using Windows.UI.Popups;
 using Windows.UI.Core;
+using CommonLibrary;
 
 namespace UWPUI
 {
@@ -17,10 +18,17 @@ namespace UWPUI
     /// </summary>
     sealed partial class App : Application
     {
-        public static bool IsConnected { get; private set; } = false;
+        public static bool IsConnected
+        {
+            get => s_isConnected; private set
+            {
+                s_isConnected = value;
+                Log.Info("Connection change: " + s_isConnected.ToString());
+            }
+        }
         public static BackgroundTaskDeferral AppServiceDeferral = null;
         private static AppServiceConnection Connection = null;
-        public static event Action<AnswerData> Recived;
+        private static bool s_isConnected = false;
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -29,32 +37,41 @@ namespace UWPUI
         public App()
         {
             this.InitializeComponent();
+            var task = Interop.LaunchBackgroundProcessAsync();
+            task.Wait(10);
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
         }
 
-        private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
+        public static async void Send(ConnectionData data)
         {
-            await (new MessageDialog(e.Message)).ShowAsync();
-        }
-
-        public static async void Send(RequestData requestData)
-        {
-            if (!IsConnected)
+            if (!IsConnected && data.Command != Command.ShutDown)
             {
                 await Interop.LaunchBackgroundProcessAsync();
             }
             if (IsConnected)
             {
-                var result = await Connection.SendMessageAsync(requestData.ToValueSet());
-#if DEBUG
-                await (new MessageDialog($"Request: {requestData.Request}\r\nStatus: {result.Status}")).ShowAsync();
-#endif
+                var result = await App.Connection.SendMessageAsync(data.ToValueSet());
+                Log.Verbose($"{data.Direction}: {data.Command}\r\nStatus: {result.Status}");
             }
             else
             {
-                await (new MessageDialog("Not Connected")).ShowAsync();
+                Log.Info("Not Connected");
+                //await (new MessageDialog("Not Connected")).ShowAsync();
             }
+        }
+
+        private async void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                AppServer.Recive(args.Request.Message.ToConnectionData());
+            });
+        }
+
+        private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            await (new MessageDialog(e.Message)).ShowAsync();
         }
 
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
@@ -74,14 +91,6 @@ namespace UWPUI
             }
         }
 
-        private async void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-               Recived?.Invoke(args.Request.Message.ToAnswerData());
-            });
-        }
-
         private void OnAppServiceCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             IsConnected = false;
@@ -90,7 +99,7 @@ namespace UWPUI
                 AppServiceDeferral.Complete();
             }
         }
-        
+
         protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
@@ -109,6 +118,7 @@ namespace UWPUI
                 }
             }
             Window.Current.Activate();
+            AppServer.RequestTopmost();
         }
 
         /// <summary>
@@ -149,6 +159,7 @@ namespace UWPUI
                 }
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
+                AppServer.RequestTopmost();
             }
         }
 

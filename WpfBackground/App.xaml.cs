@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using CommonLibrary;
 using DataModel;
 
 namespace WpfBackground
@@ -24,20 +25,18 @@ namespace WpfBackground
                 return;
             }
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            this.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            AppHelper.RegisterAutoRestart(()=>
+            AppHelper.RegisterAutoRestart(() =>
             {
                 Shutdown();
             });
             AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
             {
-                TryConnect();
+                AppServiceConnect.TryConnect();
             });
-            Clipboards.StartListen();
-            TryConnect();
-            Clipboards.Changed += Clipboards_Changed;
+            AppServer.Init();
+            this.MainWindow = AppHelper.Window;
 #if DEBUG
-            WpfWindow.ShowWindow();
+            //WpfWindow.ShowWindow();
 #endif
         }
 
@@ -47,49 +46,9 @@ namespace WpfBackground
             MessageBox.Show(exp.Message);
         }
 
-        private void Clipboards_Changed()
-        {
-            if (AppServiceConnect.IsOpen)
-            {
-                AppServiceConnect.Send(new RequestData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
-            }
-        }
-
-        private async void TryConnect()
-        {
-            if (!AppServiceConnect.IsOpen)
-            {
-                AppServiceConnect.Received += AppServiceConnect_Received;
-                AppServiceConnect.Closed += AppServiceConnect_Closed;
-                await AppServiceConnect.OpenConnection(AppServerName);
-            }
-        }
-
-        private void AppServiceConnect_Closed()
-        {
-            AppServiceConnect.Received -= AppServiceConnect_Received;
-            AppServiceConnect.Closed -= AppServiceConnect_Closed;
-            TryConnect();
-        }
-
-        private void AppServiceConnect_Received(AnswerData obj)
-        {
-            switch (obj.Request)
-            {
-                case Request.ShowWpfWindow:
-                    WpfWindow.ShowWindow();
-                    break;
-                case Request.ShutDown:
-                    ShutDown();
-                    break;
-                case Request.AskClipboardList:
-                    AppServiceConnect.Send(new RequestData(Request.AnsClipboardList, new ExClipboardList(Clipboards.TextList)));
-                    break;
-            }
-        }
-
         public static void ShutDown()
         {
+            AppHelper.DisposeHelperWindow();
             AppServiceConnect.DisposeConnection();
             App.Current.Shutdown();
         }

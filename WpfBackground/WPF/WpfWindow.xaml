@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfBackground"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
             <Button Click="OpenConnect">Connet</Button>
             <Button Click="Exit">Exit</Button>
         </StackPanel>
@@ -28,5 +32,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        <TextBox x:Name="LogTextBox" Grid.Row="1" Grid.Column="1">
+            
+        </TextBox>
     </Grid>
 </Window>

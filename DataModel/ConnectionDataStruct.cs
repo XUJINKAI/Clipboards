@@ -1,27 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace DataModel
 {
-    public class ConnectionDataStruct
+    public enum Direction
     {
-        public const string C_REQUEST = "Request";
-        public const string C_DATA = "Data";
-
-        public Request Request { get; set; }
-        public ExChangeDataBase Data { get; set; } = new ExChangeDataBase();
-
-        internal ConnectionDataStruct()
-        {
-
-        }
-
-        public override string ToString()
-        {
-            return $"Request: {Request}";
-        }
+        None,
+        AskServer,
+        UpdateServer,
+        AskUi,
+        UpdateUi,
     }
 
+    public enum Command
+    {
+        None,
+        IsOpen,
+        ShowWindow,
+        ShutDown,
+        SetTopmost,
+        ClipboardList,
+        AddClipboardItem,
+        ClearClipboardList,
+    }
+
+    public class ExChangeData
+    {
+        public List<string> ClipboardList { get; set; }
+    }
 }

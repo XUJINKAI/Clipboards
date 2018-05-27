@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using CommonLibrary;
+using System.ComponentModel;
 using System.Windows;
 
 namespace WpfBackground
@@ -13,6 +14,8 @@ namespace WpfBackground
         protected override void OnClosing(CancelEventArgs e)
         {
             Instance = null;
+            Log.AutoStringListener -= Log_AutoStringListener;
+            Log.AutoFlush = false;
         }
 
         public static void ShowWindow()
@@ -20,9 +23,24 @@ namespace WpfBackground
             if(Instance == null)
             {
                 Instance = new WpfWindow();
+                Log.AutoStringListener += Log_AutoStringListener;
+                Log.AutoFlush = true;
             }
             Instance.Show();
             Instance.Activate();
+        }
+
+        private static void Log_AutoStringListener(string obj)
+        {
+            Instance.Dispatcher.Invoke(() =>
+            {
+                Instance.AddLog(obj);
+            });
+        }
+
+        public void AddLog(string obj)
+        {
+            LogTextBox.AppendText(obj);
         }
 
         public WpfWindow()
@@ -32,7 +50,7 @@ namespace WpfBackground
             Clipboards.Changed += Clipboards_Changed;
         }
         
-        private void Clipboards_Changed()
+        private void Clipboards_Changed(string text)
         {
             ClipboardsListView.ItemsSource = null;
             ClipboardsListView.ItemsSource = Clipboards.TextList;
@@ -45,7 +63,7 @@ namespace WpfBackground
 
         private async void OpenConnect(object sender, RoutedEventArgs e)
         {
-            var result = await AppServiceConnect.OpenConnection(App.AppServerName);
+            var result = await AppServiceConnect.ConnectionAsync(App.AppServerName);
             MessageBox.Show(result);
         }
 

@@ -67,13 +67,28 @@ namespace WpfBackground
             AutoRestart = true;
         }
 
-        private static AppHelperWindow _window;
-
+        public static AppHelperWindow Window { get; private set; }
+        
         static AppHelper()
         {
-            _window = new AppHelperWindow();
-            _window.Show();
+            Window = new AppHelperWindow();
+            Window.Show();
             AppHelperWindow.RecivingMsg += AppHelperWindow_RecivingMsg;
+            App.Current.Exit += Current_Exit;
+        }
+
+        public static void DisposeHelperWindow()
+        {
+            if (Window != null)
+            {
+                Window.Close();
+                Window = null;
+            }
+        }
+
+        private static void Current_Exit(object sender, ExitEventArgs e)
+        {
+            DisposeHelperWindow();
         }
 
         private static void AppHelperWindow_RecivingMsg(int msg)

@@ -1,35 +1,42 @@
-﻿using System;
+﻿using CommonLibrary;
+using DataModel;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 
 namespace WpfBackground
 {
     static class Clipboards
     {
-        public static event Action Changed;
-        public static bool Listenning { get; private set; } = false;
+        public static event Action<string> Changed;
+        public static bool IsListenning { get; private set; } = false;
 
         public static List<string> TextList;
-        public static int TextCapacity { get; set; } = 100;
-
+        public static int TextCapacity { get; set; } = 20;
+        
         public static void StartListen()
         {
-            if (Listenning == false)
+            Log.Info("Clipboards.StartListen");
+            if (IsListenning == false)
             {
-                Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged += Clipboard_ContentChanged;
+                Clipboard.ContentChanged += Clipboard_ContentChanged;
             }
-            Listenning = true;
+            IsListenning = true;
         }
 
         public static void StopListen()
         {
-            if(Listenning== true)
+            Log.Info("Clipboards.StopListen");
+            if (IsListenning == true)
             {
-                Windows.ApplicationModel.DataTransfer.Clipboard.ContentChanged -= Clipboard_ContentChanged;
+                Clipboard.ContentChanged -= Clipboard_ContentChanged;
             }
-            Listenning = false;
+            IsListenning = false;
+        }
+
+        public static void Clear()
+        {
+            TextList.Clear();
         }
 
         static Clipboards()
@@ -39,10 +46,11 @@ namespace WpfBackground
 
         private static async void Clipboard_ContentChanged(object sender, object e)
         {
-            if (Listenning)
+            if (IsListenning)
             {
-                var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-                if (dataPackageView.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+                var dataPackageView = Clipboard.GetContent();
+                Log.Info("Formats: " + String.Join(",", dataPackageView.AvailableFormats));
+                if (dataPackageView.Contains(StandardDataFormats.Text))
                 {
                     var text = await dataPackageView.GetTextAsync();
                     if (TextList.Contains(text))
@@ -54,7 +62,7 @@ namespace WpfBackground
                         TextList.RemoveAt(0);
                     }
                     TextList.Add(text);
-                    Changed?.Invoke();
+                    Changed?.Invoke(text);
                 }
             }
         }
