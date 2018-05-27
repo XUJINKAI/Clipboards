@@ -1,8 +1,7 @@
 ﻿using CommonLibrary;
-using System;
-using WpfBackground;
+using DataModel;
 
-namespace DataModel
+namespace WpfBackground
 {
     public static class AppServer
     {
@@ -27,7 +26,7 @@ namespace DataModel
                 switch (data.Command)
                 {
                     case Command.SetTopmost:
-                        WinTopmost.ToggleTopmost(null, true);
+                        Topmost.SetOrToggle(null, true);
                         break;
                     case Command.ShowWindow:
                         WpfWindow.ShowWindow();
@@ -51,7 +50,7 @@ namespace DataModel
                         Clipboards.Clear();
                         break;
                     case Command.SetTopmost:
-                        WinTopmost.ToggleTopmost(null, true);
+                        Topmost.SetOrToggle(null, true);
                         break;
                 }
             }

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommonLibrary;
+using System;
 using System.Windows;
-using CommonLibrary;
-using DataModel;
 
 namespace WpfBackground
 {
@@ -24,6 +22,7 @@ namespace WpfBackground
                 Shutdown();
                 return;
             }
+            Log.Prefix = $"[{Module.ModuleHandleHex}]";
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppHelper.RegisterAutoRestart(() =>
             {

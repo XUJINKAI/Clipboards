@@ -7,13 +7,8 @@ using Windows.ApplicationModel;
 
 namespace UWPUI
 {
-    static class Interop
+    public static class Interop
     {
-        public static async void LaunchBackgroundProcess()
-        {
-            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
-        }
-
         public static async Task LaunchBackgroundProcessAsync()
         {
             await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();

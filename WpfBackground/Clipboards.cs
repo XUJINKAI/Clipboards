@@ -1,5 +1,4 @@
 ﻿using CommonLibrary;
-using DataModel;
 using System;
 using System.Collections.Generic;
 using Windows.ApplicationModel.DataTransfer;

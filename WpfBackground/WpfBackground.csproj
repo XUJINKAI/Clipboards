@@ -74,7 +74,6 @@
     <Compile Include="AppServer.cs" />
     <Compile Include="AppServiceConnect.cs" />
     <Compile Include="Clipboards.cs" />
-    <Compile Include="WinTopmost.cs" />
     <Compile Include="WPF\WpfWindow.xaml.cs">
       <DependentUpon>WpfWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -107,9 +106,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common\Common.csproj">
-      <Project>{3dcc2108-7abe-4c3d-91b4-5e2542071999}</Project>
-      <Name>Common</Name>
+    <ProjectReference Include="..\Common\Common.Native\Common.Native.csproj">
+      <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
+      <Name>Common.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.Standard\Common.Standard.csproj">
+      <Project>{b0881417-11c2-4032-b161-2f023d28fe6e}</Project>
+      <Name>Common.Standard</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>

@@ -6,10 +6,10 @@ using Windows.ApplicationModel.Background;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using DataModel;
 using Windows.UI.Popups;
 using Windows.UI.Core;
 using CommonLibrary;
+using DataModel;
 
 namespace UWPUI
 {
@@ -24,6 +24,10 @@ namespace UWPUI
             {
                 s_isConnected = value;
                 Log.Info("Connection change: " + s_isConnected.ToString());
+                if (value)
+                {
+                    AppServer.RequestLists();
+                }
             }
         }
         public static BackgroundTaskDeferral AppServiceDeferral = null;
@@ -37,10 +41,14 @@ namespace UWPUI
         public App()
         {
             this.InitializeComponent();
-            var task = Interop.LaunchBackgroundProcessAsync();
-            task.Wait(10);
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
+            InitBackground();
+        }
+
+        public static async void InitBackground()
+        {
+            await Interop.LaunchBackgroundProcessAsync();
         }
 
         public static async void Send(ConnectionData data)
@@ -118,7 +126,6 @@ namespace UWPUI
                 }
             }
             Window.Current.Activate();
-            AppServer.RequestTopmost();
         }
 
         /// <summary>
@@ -159,7 +166,6 @@ namespace UWPUI
                 }
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
-                AppServer.RequestTopmost();
             }
         }
 

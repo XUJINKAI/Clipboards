@@ -1,9 +1,7 @@
 ﻿using CommonLibrary;
-using System;
-using UWPUI;
-using Windows.UI.Xaml;
+using DataModel;
 
-namespace DataModel
+namespace UWPUI
 {
     public static class AppServer
     {
@@ -41,6 +39,7 @@ namespace DataModel
 
         public static void RequestTopmost()
         {
+            Log.Verbose("Request Topmost");
             App.Send(new ConnectionData(Direction.AskServer, Command.SetTopmost));
         }
 
