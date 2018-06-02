@@ -74,8 +74,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppHelper.cs" />
-    <Compile Include="Service.cs" />
     <Compile Include="AppServiceCaller.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="Clipboards.cs" />
     <Compile Include="WPF\WpfWindow.xaml.cs">
       <DependentUpon>WpfWindow.xaml</DependentUpon>
@@ -109,6 +109,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppServiceComm\AppServiceComm.csproj">
+      <Project>{268A4442-2225-450F-8A7B-18AF48FDA34B}</Project>
+      <Name>AppServiceComm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.Native\Common.Native.csproj">
       <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
       <Name>Common.Native</Name>

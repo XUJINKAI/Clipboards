@@ -1,10 +1,7 @@
-﻿using CommonLibrary;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Windows.Foundation.Collections;
 
-namespace DataModel
+namespace AppServiceComm
 {
     public static class ValueSetExtension
     {

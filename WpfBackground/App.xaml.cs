@@ -18,6 +18,7 @@ namespace WpfBackground
         public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         public static readonly string AppDataFolder = FS.CreateFolder(Path.Combine(ApplicationDataSpecialFolder, "Clipboards"));
         public static readonly string ClipboardsFolder = FS.CreateFolder(Path.Combine(AppDataFolder, "Clipboards"));
+        public static readonly string ClipboardsXmlFilePath = Path.Combine(AppDataFolder, "Clipboards.xml");
 
         private static Service Service;
 
@@ -36,7 +37,7 @@ namespace WpfBackground
             {
                 Shutdown();
             });
-            Clipboards.Init(ClipboardsFolder);
+            Clipboards.Init(ClipboardsXmlFilePath, ClipboardsFolder);
             Service = new Service(AppServerName, PackageFamilyName);
             AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
             {
@@ -44,7 +45,7 @@ namespace WpfBackground
             });
             this.MainWindow = AppHelper.Window;
 #if DEBUG
-            //WpfWindow.ShowWindow();
+            WpfWindow.ShowWindow();
 #endif
         }
 

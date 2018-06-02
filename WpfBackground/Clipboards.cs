@@ -41,10 +41,10 @@ namespace WpfBackground
             Contents.Clear();
         }
 
-        public static void Init(string folder)
+        public static void Init(string file, string folder)
         {
+            _clipboards_file = file;
             _clipboards_folder = folder;
-            _clipboards_file = Path.Combine(_clipboards_folder, "clipboards.xml");
             LoadClipboardsFile();
         }
 

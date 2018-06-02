@@ -1,4 +1,5 @@
-﻿using CommonLibrary;
+﻿using AppServiceComm;
+using CommonLibrary;
 using DataModel;
 using System;
 using System.Linq.Expressions;
@@ -12,7 +13,7 @@ namespace WpfBackground
     {
         public string AppServiceName { get; private set; }
         public string PackageFamilyName { get; private set; }
-        public IService Service { get; private set; }
+        public object ExcuteObject { get; private set; }
 
         public bool IsConnected => _connection != null;
         public AppServiceConnection _connection = null;
@@ -20,11 +21,11 @@ namespace WpfBackground
         public event Action<AppServiceClosedEventArgs> Closed;
         public event Action<AppServiceRequestReceivedEventArgs> Recived;
 
-        public AppServiceCaller(string appservername, string packagefamilyname, IService server)
+        public AppServiceCaller(string appservername, string packagefamilyname, object excuteObj)
         {
             AppServiceName = appservername;
             PackageFamilyName = packagefamilyname;
-            Service = server;
+            ExcuteObject = excuteObj;
             TryConnect(true);
         }
 
@@ -36,7 +37,6 @@ namespace WpfBackground
             }
             if (_connection == null)
             {
-                Log.Info("Connecting");
                 _connection = new AppServiceConnection
                 {
                     AppServiceName = AppServiceName,
@@ -49,13 +49,11 @@ namespace WpfBackground
                 {
                     DisposeConnection();
                 }
-                Log.Info($"OpenConnection {status}");
             }
         }
         
         public void DisposeConnection()
         {
-            Log.Verbose($"Dispose Connection");
             if (_connection != null)
             {
                 _connection.Dispose();
@@ -65,7 +63,6 @@ namespace WpfBackground
 
         private void Connection_ServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args)
         {
-            Log.Verbose("AppServiceConnect_Closed");
             DisposeConnection();
             Closed?.Invoke(args);
         }
@@ -76,7 +73,7 @@ namespace WpfBackground
             {
                 var func = ValueSetExtension.GetMethod(args.Request.Message);
                 Log.Verbose($"Recived {func.Name}");
-                var result = func.Excute(Service);
+                var result = func.Excute(ExcuteObject);
                 if (result != null)
                 {
                     var response = ValueSetExtension.SetResponse(result);

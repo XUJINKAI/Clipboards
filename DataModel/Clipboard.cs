@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace DataModel
 {
-    [Serializable]
-    public class Setting
-    {
-        public int ClipboardsCapacity { get; set; } = 50;
-    }
-
     [Serializable]
     public class ClipboardItem
     {
@@ -36,7 +31,7 @@ namespace DataModel
         public int Capacity = 50;
 
         public int Ptr { get; set; } = 0;
-        
+
         public List<ClipboardItem> List { get; set; }
 
         public ClipboardContents()
@@ -70,5 +65,4 @@ namespace DataModel
 
         public void Clear() => List.Clear();
     }
-
 }
