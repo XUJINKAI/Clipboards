@@ -73,7 +73,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppServer.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="AppServiceReciver.cs" />
     <Compile Include="ClipboardListPage.xaml.cs">
       <DependentUpon>ClipboardListPage.xaml</DependentUpon>
     </Compile>
@@ -84,7 +85,6 @@
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="TextDisplayConverter.cs" />
-    <Compile Include="Interop.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

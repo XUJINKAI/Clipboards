@@ -18,22 +18,6 @@ namespace UWPUI
     /// </summary>
     sealed partial class App : Application
     {
-        public static bool IsConnected
-        {
-            get => s_isConnected; private set
-            {
-                s_isConnected = value;
-                Log.Info("Connection change: " + s_isConnected.ToString());
-                if (value)
-                {
-                    AppServer.RequestGetClipboardList();
-                }
-            }
-        }
-        public static BackgroundTaskDeferral AppServiceDeferral = null;
-        private static AppServiceConnection Connection = null;
-        private static bool s_isConnected = false;
-
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -43,72 +27,21 @@ namespace UWPUI
             this.InitializeComponent();
             this.Suspending += OnSuspending;
             this.UnhandledException += App_UnhandledException;
-            InitBackground();
+            AppServiceReciver.Init(Client.Instance, true);
         }
-
-        public static async void InitBackground()
-        {
-            await Interop.LaunchBackgroundProcessAsync();
-            AppServer.Init();
-        }
-
-        public static async void Send(ConnectionData data)
-        {
-            if (!IsConnected && data.Command != Command.ShutDown)
-            {
-                await Interop.LaunchBackgroundProcessAsync();
-            }
-            if (IsConnected)
-            {
-                var result = await App.Connection.SendMessageAsync(data.ToValueSet());
-                Log.Verbose($"{data.Type}: {data.Command}\r\nStatus: {result.Status}");
-            }
-            else
-            {
-                Log.Info("Not Connected");
-                //await (new MessageDialog("Not Connected")).ShowAsync();
-            }
-        }
-
-        private async void Connection_RequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                AppServer.Recive(args.Request.Message.ToConnectionData());
-            });
-        }
-
+        
         private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             await (new MessageDialog(e.Message)).ShowAsync();
         }
 
+        //
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
-            // connection established from the fulltrust process
-            if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
-            {
-                AppServiceDeferral = args.TaskInstance.GetDeferral();
-                args.TaskInstance.Canceled += OnAppServiceCanceled;
-
-                if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails details)
-                {
-                    Connection = details.AppServiceConnection;
-                    IsConnected = true;
-                    Connection.RequestReceived += Connection_RequestReceived;
-                }
-            }
+            AppServiceReciver.OnBackgroundActivated(args);
         }
-
-        private void OnAppServiceCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
-        {
-            IsConnected = false;
-            if (AppServiceDeferral != null)
-            {
-                AppServiceDeferral.Complete();
-            }
-        }
-
+        
+        // launch by protocol
         protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);

@@ -1,17 +1,20 @@
 ﻿using CommonLibrary;
+using DataModel;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace WpfBackground
 {
     static class Clipboards
     {
+        private static string _clipboards_folder;
+        private static string _clipboards_file;
+
         public static event Action<string> Changed;
         public static bool IsListenning { get; private set; } = false;
 
-        public static List<string> TextList;
-        public static int TextCapacity { get; set; } = 20;
+        public static ClipboardContents Contents { get; private set; }
         
         public static void StartListen()
         {
@@ -35,12 +38,24 @@ namespace WpfBackground
 
         public static void Clear()
         {
-            TextList.Clear();
+            Contents.Clear();
         }
 
-        static Clipboards()
+        public static void Init(string folder)
         {
-            TextList = new List<string>();
+            _clipboards_folder = folder;
+            _clipboards_file = Path.Combine(_clipboards_folder, "clipboards.xml");
+            LoadClipboardsFile();
+        }
+
+        private static void LoadClipboardsFile()
+        {
+            Contents = XmlSerialization.ReadXmlFile<ClipboardContents>(_clipboards_file, true);
+        }
+
+        public static void WriteToClipboards()
+        {
+            XmlSerialization.WriteXmlFile(Contents, _clipboards_file);
         }
 
         private static async void Clipboard_ContentChanged(object sender, object e)
@@ -54,15 +69,7 @@ namespace WpfBackground
                     var text = await dataPackageView.GetTextAsync();
                     //TODO
                     if (text.Length > 10000) { return; }
-                    if (TextList.Contains(text))
-                    {
-                        TextList.Remove(text);
-                    }
-                    while (TextList.Count > TextCapacity)
-                    {
-                        TextList.RemoveAt(0);
-                    }
-                    TextList.Add(text);
+                    Contents.AddText(text);
                     Changed?.Invoke(text);
                 }
             }

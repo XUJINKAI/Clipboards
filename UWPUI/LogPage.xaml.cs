@@ -26,13 +26,13 @@ namespace UWPUI
         public LogPage()
         {
             this.InitializeComponent();
-            AppServer.LogChanged += AppServer_LogChanged;
-            LogTextBlock.Text = AppServer.LogText;
+            Client.Instance.LogChanged += AppServer_LogChanged;
+            LogTextBlock.Text = Client.Instance.LogText;
         }
 
         private void AppServer_LogChanged(string obj)
         {
-            LogTextBlock.Text = AppServer.LogText;
+            LogTextBlock.Text = Client.Instance.LogText;
         }
     }
 }

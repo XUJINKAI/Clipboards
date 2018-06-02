@@ -1,5 +1,6 @@
 ﻿using CommonLibrary;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace WpfBackground
@@ -13,6 +14,12 @@ namespace WpfBackground
         public const string PackageFamilyName = "55774JinkaiXu.57013CAEE6225_p5dcp4q3yn5jt";
         public const string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
         public const string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
+
+        public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static readonly string AppDataFolder = FS.CreateFolder(Path.Combine(ApplicationDataSpecialFolder, "Clipboards"));
+        public static readonly string ClipboardsFolder = FS.CreateFolder(Path.Combine(AppDataFolder, "Clipboards"));
+
+        private static Service Service;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -29,11 +36,12 @@ namespace WpfBackground
             {
                 Shutdown();
             });
+            Clipboards.Init(ClipboardsFolder);
+            Service = new Service(AppServerName, PackageFamilyName);
             AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
             {
-                AppServiceConnect.TryConnect();
+                Service.AppServiceCaller.TryConnect();
             });
-            AppServer.Init();
             this.MainWindow = AppHelper.Window;
 #if DEBUG
             //WpfWindow.ShowWindow();
@@ -48,8 +56,9 @@ namespace WpfBackground
 
         public static void ShutDown()
         {
+            Clipboards.WriteToClipboards();
             AppHelper.DisposeHelperWindow();
-            AppServiceConnect.DisposeConnection();
+            Service.Dispose();
             App.Current.Shutdown();
         }
     }

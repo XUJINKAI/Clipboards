@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataModel;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -27,44 +28,51 @@ namespace UWPUI
         public ClipboardListPage()
         {
             this.InitializeComponent();
-            ClipboardListView.ItemsSource = AppServer.ClipboardContents;
+            GetList();
         }
 
-        private void CopySelect(object sender, RoutedEventArgs e)
+        private async void CopySelect(object sender, RoutedEventArgs e)
         {
             if (ClipboardListView.SelectedItems.Count > 0)
             {
                 var list = ClipboardListView.SelectedItems.Cast<ClipboardItem>();
                 var str = list.Aggregate("", (sum, next) => $"{sum}\r\n{next.Text}");
-                AppServer.SetClipboard(str);
+                await AppServiceReciver.Invoke(s => s.SetClipboard(new ClipboardItem(str)));
             }
         }
 
-        private void ClipboardItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private async void ClipboardItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            var TextBlock = (TextBlock)sender;
-            var text = TextBlock.Tag as string;
-            AppServer.SetClipboard(text);
             ClipboardListView.SelectedItem = null;
+            var TextBlock = (TextBlock)sender;
+            var item = TextBlock.Tag as ClipboardItem;
+            var x = await AppServiceReciver.Invoke(s => s.SetClipboard(item));
         }
 
         private bool isTopmost = false;
 
-        private void TopmostToggle(object sender, RoutedEventArgs e)
+        private async void TopmostToggle(object sender, RoutedEventArgs e)
         {
+            TopmostButton.IsEnabled = false;
             isTopmost = !isTopmost;
-            AppServer.RequestSetTopmost(isTopmost);
-            TopmostButton.Icon = new SymbolIcon(isTopmost ? Symbol.Pin : Symbol.UnPin);
+            var x = (bool)await AppServiceReciver.Invoke(s => s.SetTopmost(isTopmost));
+            TopmostButton.Icon = new SymbolIcon(x ? Symbol.Pin : Symbol.UnPin);
+            TopmostButton.IsEnabled = true;
         }
 
-        private void ClearLists(object sender, RoutedEventArgs e)
+        private async void ClearLists(object sender, RoutedEventArgs e)
         {
-            AppServer.RequestClearClipboardList();
+            var x = (bool)await AppServiceReciver.Invoke(s => s.ClearClipboardList());
+            if (x)
+            {
+                Client.Instance.ClipboardContents.Clear();
+            }
         }
 
-        private void GetList(object sender, RoutedEventArgs e)
+        private async void GetList(object sender = null, RoutedEventArgs e = null)
         {
-            AppServer.RequestGetClipboardList();
+            await Client.Instance.RequestClipboardContentsAsync();
+            ClipboardListView.ItemsSource = Client.Instance.ClipboardContents?.List;
         }
     }
 }

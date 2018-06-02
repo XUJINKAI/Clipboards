@@ -74,8 +74,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppHelper.cs" />
-    <Compile Include="AppServer.cs" />
-    <Compile Include="AppServiceConnect.cs" />
+    <Compile Include="Service.cs" />
+    <Compile Include="AppServiceCaller.cs" />
     <Compile Include="Clipboards.cs" />
     <Compile Include="WPF\WpfWindow.xaml.cs">
       <DependentUpon>WpfWindow.xaml</DependentUpon>

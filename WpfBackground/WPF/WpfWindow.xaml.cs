@@ -46,14 +46,14 @@ namespace WpfBackground
         public WpfWindow()
         {
             InitializeComponent();
-            ClipboardsListView.ItemsSource = Clipboards.TextList;
+            ClipboardsListView.ItemsSource = Clipboards.Contents.List;
             Clipboards.Changed += Clipboards_Changed;
         }
         
         private void Clipboards_Changed(string text)
         {
             ClipboardsListView.ItemsSource = null;
-            ClipboardsListView.ItemsSource = Clipboards.TextList;
+            ClipboardsListView.ItemsSource = Clipboards.Contents.List;
         }
         
         private void Shutdown()
@@ -61,10 +61,9 @@ namespace WpfBackground
             App.ShutDown();
         }
 
-        private async void OpenConnect(object sender, RoutedEventArgs e)
+        private void OpenConnect(object sender, RoutedEventArgs e)
         {
-            var result = await AppServiceConnect.ConnectionAsync(App.AppServerName, App.PackageFamilyName);
-            MessageBox.Show(result);
+            Service.Instance.AppServiceCaller.TryConnect();
         }
 
         private void Exit(object sender, RoutedEventArgs e)

@@ -25,7 +25,7 @@
                     <GridViewColumn Header="Text" Width="300">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding}"></TextBlock>
+                                <TextBlock Text="{Binding Text}"></TextBlock>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
