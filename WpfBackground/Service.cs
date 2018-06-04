@@ -1,76 +1,82 @@
 ﻿using CommonLibrary;
 using DataModel;
+using MethodWrapper;
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace WpfBackground
 {
     public class Service : IService
     {
-        public static Service Instance { get; private set; }
-
-        public AppServiceCaller AppServiceCaller { get; private set; }
-
+        public static Service Current { get; private set; }
+        public static AppServiceInvoker AppServiceInvoker { get; private set; }
+        public static IClient Client { get; private set; }
+        
         public Service(string appservername, string packagefamilyname)
         {
-            AppServiceCaller = new AppServiceCaller(appservername, packagefamilyname, this);
+            Current = this;
+            AppServiceInvoker = new AppServiceInvoker(appservername, packagefamilyname, this);
+            Client = InvokeProxy.CreateProxy<IClient>(AppServiceInvoker);
             Clipboards.Changed += Clipboards_Changed;
             Clipboards.StartListen();
-            Instance = this;
         }
 
         public void Dispose()
         {
-            if (AppServiceCaller != null)
+            if (AppServiceInvoker != null)
             {
-                AppServiceCaller.DisposeConnection();
+                AppServiceInvoker.DisposeConnection();
             }
         }
 
         private void Clipboards_Changed(string text)
         {
-            AppServiceCaller.Invoke(c => c.AddClipboardItem(new ClipboardItem(text)));
+            Client.AddClipboardItem(new ClipboardItem(text));
         }
-        
-       
-        public void ShowUwpWindow()
+
+
+        public Task ShowUwpWindow()
         {
             WpfWindow.ShowWindow();
+            return Task.FromResult<object>(null);
         }
 
-        public void Shutdown()
+        public Task Shutdown()
         {
             App.ShutDown();
+            return Task.FromResult<object>(null);
         }
-
-        public ClipboardContents GetClipboardContents()
+        
+        public Task<ClipboardContents> GetClipboardContents()
         {
-            return Clipboards.Contents;
+            return Task.FromResult(Clipboards.Contents);
         }
 
-        public bool ClearClipboardList()
+        public Task<bool> ClearClipboardList()
         {
             Clipboards.Clear();
-            return true;
+            return Task.FromResult(true);
         }
 
-        public Setting GetSetting()
+        public Task<Setting> GetSetting()
         {
-            return new Setting();
+            return Task.FromResult(new Setting());
         }
 
-        public bool SetTopmost(bool topmost)
+        public Task<bool> SetTopmost(bool topmost)
         {
             IntPtr handle = Topmost.GetForegroundWindow();
             Topmost.SetOrToggle(handle, topmost);
-            return Topmost.Get(handle);
+            var result = Topmost.Get(handle);
+            return Task.FromResult(result);
         }
 
-        public bool SetClipboard(ClipboardItem clipboardItem)
+        public Task SetClipboard(ClipboardItem clipboardItem)
         {
             Clipboard.SetDataObject(clipboardItem.Text);
-            return true;
+            return Task.FromResult<object>(null);
         }
     }
 }

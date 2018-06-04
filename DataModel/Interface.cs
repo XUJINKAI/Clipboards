@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataModel
 {
     public interface IClient
     {
-        void AddClipboardItem(ClipboardItem clipboardItem);
+        Task AddClipboardItem(ClipboardItem clipboardItem);
     }
 
     public interface IService
     {
-        bool SetTopmost(bool topmost);
-        void ShowUwpWindow();
-        void Shutdown();
-        bool SetClipboard(ClipboardItem clipboardItem);
-        ClipboardContents GetClipboardContents();
-        bool ClearClipboardList();
-        Setting GetSetting();
+        Task<bool> SetTopmost(bool topmost);
+        Task ShowUwpWindow();
+        Task Shutdown();
+        Task SetClipboard(ClipboardItem clipboardItem);
+        Task<ClipboardContents> GetClipboardContents();
+        Task<bool> ClearClipboardList();
+        Task<Setting> GetSetting();
     }
 }

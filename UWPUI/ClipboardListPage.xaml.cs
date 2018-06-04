@@ -28,16 +28,17 @@ namespace UWPUI
         public ClipboardListPage()
         {
             this.InitializeComponent();
+            ClipboardListView.ItemsSource = Client.ClipboardContents;
             GetList();
         }
-
+        
         private async void CopySelect(object sender, RoutedEventArgs e)
         {
             if (ClipboardListView.SelectedItems.Count > 0)
             {
                 var list = ClipboardListView.SelectedItems.Cast<ClipboardItem>();
                 var str = list.Aggregate("", (sum, next) => $"{sum}\r\n{next.Text}");
-                await AppServiceReciver.Invoke(s => s.SetClipboard(new ClipboardItem(str)));
+                await Client.ServerProxy.SetClipboard(new ClipboardItem(str));
             }
         }
 
@@ -46,7 +47,7 @@ namespace UWPUI
             ClipboardListView.SelectedItem = null;
             var TextBlock = (TextBlock)sender;
             var item = TextBlock.Tag as ClipboardItem;
-            var x = await AppServiceReciver.Invoke(s => s.SetClipboard(item));
+            await Client.ServerProxy.SetClipboard(item);
         }
 
         private bool isTopmost = false;
@@ -55,24 +56,23 @@ namespace UWPUI
         {
             TopmostButton.IsEnabled = false;
             isTopmost = !isTopmost;
-            var x = (bool)await AppServiceReciver.Invoke(s => s.SetTopmost(isTopmost));
+            var x = await Client.ServerProxy.SetTopmost(isTopmost);
             TopmostButton.Icon = new SymbolIcon(x ? Symbol.Pin : Symbol.UnPin);
             TopmostButton.IsEnabled = true;
         }
 
         private async void ClearLists(object sender, RoutedEventArgs e)
         {
-            var x = (bool)await AppServiceReciver.Invoke(s => s.ClearClipboardList());
+            var x = await Client.ServerProxy.ClearClipboardList();
             if (x)
             {
-                Client.Instance.ClipboardContents.Clear();
+                Client.ClipboardContents.Clear();
             }
         }
 
         private async void GetList(object sender = null, RoutedEventArgs e = null)
         {
-            await Client.Instance.RequestClipboardContentsAsync();
-            ClipboardListView.ItemsSource = Client.Instance.ClipboardContents?.List;
+            await Client.Current.RequestClipboardContentsAsync();
         }
     }
 }

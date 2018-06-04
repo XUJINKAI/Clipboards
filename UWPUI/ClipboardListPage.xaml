@@ -34,7 +34,7 @@
                     <Grid>
                         <TextBlock Text="{Binding Text, Converter={StaticResource TextDisplay}}"
                                    Grid.Column="1" TextWrapping="Wrap"
-                                   Tag="{Binding Text}"
+                                   Tag="{Binding}"
                                    DoubleTapped="ClipboardItem_DoubleTapped"></TextBlock>
                     </Grid>
                 </DataTemplate>

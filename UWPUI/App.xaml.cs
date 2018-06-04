@@ -10,6 +10,7 @@ using Windows.UI.Popups;
 using Windows.UI.Core;
 using CommonLibrary;
 using DataModel;
+using System.Threading.Tasks;
 
 namespace UWPUI
 {
@@ -26,10 +27,16 @@ namespace UWPUI
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.UnhandledException += App_UnhandledException;
-            AppServiceReciver.Init(Client.Instance, true);
+            Client.Init();
         }
-        
+
+        private async void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+        {
+            await(new MessageDialog(((Exception)e.ExceptionObject).Message)).ShowAsync();
+        }
+
         private async void App_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             await (new MessageDialog(e.Message)).ShowAsync();
@@ -38,7 +45,7 @@ namespace UWPUI
         //
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
-            AppServiceReciver.OnBackgroundActivated(args);
+            AppServiceInvoker.OnBackgroundActivated(args);
         }
         
         // launch by protocol

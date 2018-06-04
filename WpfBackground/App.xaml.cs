@@ -39,13 +39,13 @@ namespace WpfBackground
             });
             Clipboards.Init(ClipboardsXmlFilePath, ClipboardsFolder);
             Service = new Service(AppServerName, PackageFamilyName);
-            AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
+            AppHelper.RegisterReciveMessage(MsgConnectAppService, (Action)(() =>
             {
-                Service.AppServiceCaller.TryConnect();
-            });
+                Service.AppServiceInvoker.TryConnect();
+            }));
             this.MainWindow = AppHelper.Window;
 #if DEBUG
-            WpfWindow.ShowWindow();
+            //WpfWindow.ShowWindow();
 #endif
         }
 

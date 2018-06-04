@@ -17,14 +17,14 @@ namespace UWPUI
             PackageFamilyNameTextBox.Text = Windows.ApplicationModel.Package.Current.Id.FamilyName;
         }
 
-        private async void ExitBackground(object sender, RoutedEventArgs e)
+        private void ExitBackground(object sender, RoutedEventArgs e)
         {
-            await AppServiceReciver.Invoke(s => s.Shutdown());
+            Client.Current.ExitBackground();
         }
 
         private async void ShowWpfWindow(object sender, RoutedEventArgs e)
         {
-            await AppServiceReciver.Invoke(s => s.ShowUwpWindow());
+            await Client.ServerProxy.ShowUwpWindow();
         }
 
     }

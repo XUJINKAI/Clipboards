@@ -1,12 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace AppServiceComm
+namespace MethodWrapper.Extensions
 {
     public static class ExpressionExtension
     {
+        public static MethodCall ToMethodCall(this LambdaExpression expr)
+        {
+            switch (expr.Body)
+            {
+                case MethodCallExpression methodcall:
+                    return methodcall.ToMethodCall();
+                case UnaryExpression unary:
+                    switch (unary.Operand)
+                    {
+                        case MethodCallExpression mc1:
+                            return mc1.ToMethodCall();
+                        default:
+                            throw new NotSupportedException(unary.Operand.GetType().ToString());
+                    }
+                default:
+                    throw new NotSupportedException(expr.Body.GetType().ToString());
+            }
+        }
+
+        public static MethodCall ToMethodCall(this MethodCallExpression methodCallExpression)
+        {
+            var result = new MethodCall
+            {
+                Name = methodCallExpression.Method.Name,
+                Args = new List<object>()
+            };
+            foreach (var exp in methodCallExpression.Arguments)
+            {
+                result.Args.Add(exp.Evaluate());
+            }
+            return result;
+        }
+
         public static object Evaluate(this Expression expr)
         {
             switch (expr.NodeType)

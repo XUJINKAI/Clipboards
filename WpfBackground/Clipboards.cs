@@ -69,7 +69,7 @@ namespace WpfBackground
                     var text = await dataPackageView.GetTextAsync();
                     //TODO
                     if (text.Length > 10000) { return; }
-                    Contents.AddText(text);
+                    Contents.AddNewText(text);
                     Changed?.Invoke(text);
                 }
             }

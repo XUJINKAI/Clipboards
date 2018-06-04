@@ -1,15 +1,18 @@
-﻿using AppServiceComm;
-using CommonLibrary;
+﻿using CommonLibrary;
 using DataModel;
+using MethodWrapper;
+using MethodWrapper.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.Foundation.Collections;
 
 namespace WpfBackground
 {
-    public class AppServiceCaller
+    public class AppServiceInvoker : IInvokerProxy
     {
         public string AppServiceName { get; private set; }
         public string PackageFamilyName { get; private set; }
@@ -21,7 +24,7 @@ namespace WpfBackground
         public event Action<AppServiceClosedEventArgs> Closed;
         public event Action<AppServiceRequestReceivedEventArgs> Recived;
 
-        public AppServiceCaller(string appservername, string packagefamilyname, object excuteObj)
+        public AppServiceInvoker(string appservername, string packagefamilyname, object excuteObj)
         {
             AppServiceName = appservername;
             PackageFamilyName = packagefamilyname;
@@ -71,30 +74,30 @@ namespace WpfBackground
         {
             App.Current.Dispatcher.Invoke(async () =>
             {
-                var func = ValueSetExtension.GetMethod(args.Request.Message);
+                var func = args.Request.Message.ToMethodCall();
                 Log.Verbose($"Recived {func.Name}");
-                var result = func.Excute(ExcuteObject);
-                if (result != null)
+                var excuteResult = func.Excute(ExcuteObject);
+                if (excuteResult != null)
                 {
-                    var response = ValueSetExtension.SetResponse(result);
+                    var response = (new MethodCall() { Result = excuteResult }).ToValueSet();
                     var status = await args.Request.SendResponseAsync(response);
                     Log.Verbose($"Response Status {status}");
                 }
                 Recived?.Invoke(args);
             });
         }
-
-        public async Task<object> Invoke(Expression<Func<IClient, object>> expression)
+        
+        public async Task<object> InvokeAsync(MethodInfo tartgetMethod, object[] args)
         {
-            ValueSet set = ValueSetExtension.SetLambda(expression);
+            MethodCall methodCall = new MethodCall()
+            {
+                Name = tartgetMethod.Name,
+                Args = new List<object>(args),
+            };
+            ValueSet set = methodCall.ToValueSet();
             AppServiceResponse appServiceResponse = await _connection.SendMessageAsync(set);
-            return ValueSetExtension.GetResponse(appServiceResponse.Message);
-        }
-
-        public async void Invoke(Expression<Action<IClient>> expression)
-        {
-            ValueSet set = ValueSetExtension.SetLambda(expression);
-            AppServiceResponse appServiceResponse = await _connection.SendMessageAsync(set);
+            MethodCall result = appServiceResponse.Message.ToMethodCall();
+            return result?.Result;
         }
     }
 }

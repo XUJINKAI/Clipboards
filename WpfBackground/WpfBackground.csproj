@@ -40,6 +40,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Reflection.DispatchProxy, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.DispatchProxy.4.5.0\lib\net461\System.Reflection.DispatchProxy.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.dll</HintPath>
@@ -74,7 +77,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppHelper.cs" />
-    <Compile Include="AppServiceCaller.cs" />
+    <Compile Include="AppServiceInvoker.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Clipboards.cs" />
     <Compile Include="WPF\WpfWindow.xaml.cs">
@@ -100,6 +103,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -109,9 +113,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppServiceComm\AppServiceComm.csproj">
+    <ProjectReference Include="..\AppServiceComm\MethodWrapper.csproj">
       <Project>{268A4442-2225-450F-8A7B-18AF48FDA34B}</Project>
-      <Name>AppServiceComm</Name>
+      <Name>MethodWrapper</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.Native\Common.Native.csproj">
       <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>

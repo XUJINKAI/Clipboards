@@ -46,14 +46,14 @@ namespace WpfBackground
         public WpfWindow()
         {
             InitializeComponent();
-            ClipboardsListView.ItemsSource = Clipboards.Contents.List;
+            ClipboardsListView.ItemsSource = Clipboards.Contents;
             Clipboards.Changed += Clipboards_Changed;
         }
         
         private void Clipboards_Changed(string text)
         {
             ClipboardsListView.ItemsSource = null;
-            ClipboardsListView.ItemsSource = Clipboards.Contents.List;
+            ClipboardsListView.ItemsSource = Clipboards.Contents;
         }
         
         private void Shutdown()
@@ -63,7 +63,7 @@ namespace WpfBackground
 
         private void OpenConnect(object sender, RoutedEventArgs e)
         {
-            Service.Instance.AppServiceCaller.TryConnect();
+            Service.AppServiceInvoker.TryConnect();
         }
 
         private void Exit(object sender, RoutedEventArgs e)
