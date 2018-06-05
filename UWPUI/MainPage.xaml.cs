@@ -44,6 +44,9 @@ namespace UWPUI
                     case "Log":
                         rootFrame.Navigate(typeof(LogPage));
                         break;
+                    case "Exit":
+                        Client.Current.ExitBackground();
+                        break;
                 }
             }
         }

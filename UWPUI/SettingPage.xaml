@@ -44,7 +44,6 @@
             <TextBlock FontSize="26" Margin="0,10,0,0">Debug</TextBlock>
             <TextBox Header="PackageFamilyName" x:Name="PackageFamilyNameTextBox" IsReadOnly="True"></TextBox>
             <Button Click="ShowWpfWindow">Show WPF</Button>
-            <Button Click="ExitBackground">Exit</Button>
         </StackPanel>
     </Grid>
 </Page>

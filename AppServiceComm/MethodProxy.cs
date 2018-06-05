@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace MethodWrapper
         Object,
     }
 
-    public class InvokeProxy : DispatchProxy
+    public class MethodProxy : DispatchProxy
     {
         public event BeforeInvokeEventHanlder BeforeInvoke;
         public event AfterInvokeEventHanlder AfterInvoke;
@@ -25,7 +26,7 @@ namespace MethodWrapper
 
         private static T Create<T>(InvokeType invokeType, object invoker_object)
         {
-            object proxy = Create<T, InvokeProxy>();
+            object proxy = Create<T, MethodProxy>();
             var p = Cast(proxy);
             p._type = typeof(T);
             p._invokeType = invokeType;
@@ -70,13 +71,14 @@ namespace MethodWrapper
             return proxy;
         }
 
-        public static InvokeProxy Cast(object obj)
+        public static MethodProxy Cast(object obj)
         {
-            return (InvokeProxy)obj;
+            return (MethodProxy)obj;
         }
 
         protected override object Invoke(MethodInfo targetMethod, object[] args)
         {
+            System.Diagnostics.Debug.WriteLine("[MethodProxy.Invoke]" + (new MethodCallInfo() { Name = targetMethod.Name, Args = args.ToList() }).ToString());
             BeforeInvokeEventArgs beforeArgs = new BeforeInvokeEventArgs()
             {
                 MethodInfo = targetMethod,
@@ -105,11 +107,16 @@ namespace MethodWrapper
             if (targetMethod.ReturnType?.BaseType == typeof(Task))
             {
                 // Task<Object> to Task<T>
-                var genericMethod = typeof(InvokeProxy).GetMethod("ConvertTaskObject");
-                if (genericMethod != null)
+                var convertMethod = typeof(MethodProxy).GetMethod("ConvertTaskObject");
+                if (convertMethod != null)
                 {
                     Type type = targetMethod.ReturnType.GetGenericArguments()[0];
-                    result = genericMethod.MakeGenericMethod(type).Invoke(null, new object[] { result });
+                    var genericMethod = convertMethod.MakeGenericMethod(type);
+                    if (result.GetType().BaseType == null)
+                    {
+                        System.Diagnostics.Debugger.Break();
+                    }
+                    result = genericMethod.Invoke(null, new object[] { result });
                 }
             }
             else if (targetMethod.ReturnType == typeof(Task))

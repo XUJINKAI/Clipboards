@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 namespace MethodWrapper
 {
     [Serializable]
-    public class MethodCall
+    public class MethodCallInfo
     {
         public string Name { get; set; }
         public List<Object> Args { get; set; }
         public object Result { get; set; }
 
-        public MethodCall()
+        public MethodCallInfo()
         {
             Args = new List<object>();
         }
@@ -26,6 +26,20 @@ namespace MethodWrapper
                 return invokeresult.GetType().GetMethod("get_Result").Invoke(invokeresult, null);
             }
             return invokeresult;
+        }
+
+        public override string ToString()
+        {
+            string s = Name;
+            if (Args.Count != 0)
+            {
+                s += " {" + string.Join(",", Args) + "}";
+            }
+            if (Result != null)
+            {
+                s += ": " + Result.ToString();
+            }
+            return s;
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using CommonLibrary;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace DataModel
@@ -13,6 +9,7 @@ namespace DataModel
     public enum ClipboardContentType
     {
         Text,
+        Image,
     }
 
     [Serializable]
@@ -42,7 +39,7 @@ namespace DataModel
                 Base64 = value.ToBase64BinaryString();
             }
         }
-
+        
         public ClipboardItem()
         {
             Time = DateTime.Now;
@@ -93,11 +90,6 @@ namespace DataModel
                 Remove(item);
             }
             base.Insert(0, item);
-        }
-
-        public void AddNewText(string text)
-        {
-            AddNew(new ClipboardItem(text));
         }
     }
 }

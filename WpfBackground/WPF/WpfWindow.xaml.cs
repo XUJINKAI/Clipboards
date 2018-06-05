@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using DataModel;
 using System.ComponentModel;
 using System.Windows;
 
@@ -47,28 +48,6 @@ namespace WpfBackground
         {
             InitializeComponent();
             ClipboardsListView.ItemsSource = Clipboards.Contents;
-            Clipboards.Changed += Clipboards_Changed;
-        }
-        
-        private void Clipboards_Changed(string text)
-        {
-            ClipboardsListView.ItemsSource = null;
-            ClipboardsListView.ItemsSource = Clipboards.Contents;
-        }
-        
-        private void Shutdown()
-        {
-            App.ShutDown();
-        }
-
-        private void OpenConnect(object sender, RoutedEventArgs e)
-        {
-            Service.AppServiceInvoker.TryConnect();
-        }
-
-        private void Exit(object sender, RoutedEventArgs e)
-        {
-            Shutdown();
         }
     }
 }

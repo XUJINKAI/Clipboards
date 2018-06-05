@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using CommonLibrary.Extensions;
 using DataModel;
 using MethodWrapper;
 using MethodWrapper.Extensions;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -30,7 +32,9 @@ namespace UWPUI
         public static AppServiceConnection Connection { get; private set; } = null;
 
         public static event Action Connected;
-        
+
+        private static readonly ManualResetEvent BackgroundLaunchedSignal = new ManualResetEvent(false);
+
         public static void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
@@ -43,6 +47,8 @@ namespace UWPUI
                     Connection.ServiceClosed += Connection_ServiceClosed;
                     Connection.RequestReceived += OnConnection_RequestReceived;
                     Connected?.Invoke();
+                    Log.Debug("Connected (OnBackgroundActivated)");
+                    BackgroundLaunchedSignal.Set();
                 }
             }
         }
@@ -59,6 +65,8 @@ namespace UWPUI
 
         private static async void OnConnectionClosed()
         {
+            Log.Debug("ConnectionClosed");
+            BackgroundLaunchedSignal.Reset();
             if (AppServiceDeferral != null)
             {
                 AppServiceDeferral.Complete();
@@ -75,12 +83,25 @@ namespace UWPUI
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                MethodCall methodCall = args.Request.Message.ToMethodCall();
-                var obj = methodCall.Excute(Client);
+                MethodCallInfo methodCall = args.Request.Message.ToMethodCall();
+                Log.Debug($"[Reveive] {methodCall.Name}");
+                object obj;
+                try
+                {
+                    obj = methodCall.Excute(Client);
+                    Log.Debug($"[ExcuteResult] {obj}");
+                }
+                catch (Exception ex)
+                {
+                    Log.Debug(ex.ToStringLong());
+                    obj = null;
+                }
                 if (obj != null)
                 {
-                    MethodCall result = new MethodCall()
+                    Log.Debug("[SendingResponse]");
+                    MethodCallInfo result = new MethodCallInfo()
                     {
+                        Name = methodCall.Name,
                         Result = obj
                     };
                     var set = result.ToValueSet();
@@ -92,33 +113,36 @@ namespace UWPUI
         
         public async Task<object> InvokeAsync(MethodInfo targetMethod, object[] args)
         {
-            await EnsureConnectedAsync();
             if (Connection == null)
             {
+                await UWPUI.Client.ShowMsgAsync("Not Connected");
+                if (targetMethod.ReturnType.IsValueType)
+                {
+                    return Activator.CreateInstance(targetMethod.ReturnType);
+                }
                 return null;
             }
-            MethodCall methodCall = new MethodCall()
+            MethodCallInfo methodCall = new MethodCallInfo()
             {
                 Name = targetMethod.Name,
                 Args = new List<object>(args),
             };
             ValueSet set = methodCall.ToValueSet();
+            Log.Debug($"[Invoke] {methodCall}");
             AppServiceResponse appServiceResponse = await Connection.SendMessageAsync(set);
-            MethodCall result = appServiceResponse.Message.ToMethodCall();
+            Log.Debug($"[AppServiceResponse] {appServiceResponse}");
+            MethodCallInfo result = appServiceResponse.Message.ToMethodCall();
+            Log.Debug($"[Result] {result}");
             return result?.Result;
         }
-
-
-        public async void EnsureConnected()
-        {
-            await EnsureConnectedAsync();
-        }
-
+        
         public async Task EnsureConnectedAsync()
         {
             if (AutoLaunchProcess && Connection == null)
             {
+                Log.Debug("LaunchBackgroundProcessAsync start");
                 await LaunchBackgroundProcessAsync();
+                Log.Debug("LaunchBackgroundProcessAsync end");
             }
         }
 

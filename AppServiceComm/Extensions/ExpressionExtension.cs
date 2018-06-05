@@ -8,7 +8,7 @@ namespace MethodWrapper.Extensions
 {
     public static class ExpressionExtension
     {
-        public static MethodCall ToMethodCall(this LambdaExpression expr)
+        public static MethodCallInfo ToMethodCall(this LambdaExpression expr)
         {
             switch (expr.Body)
             {
@@ -27,9 +27,9 @@ namespace MethodWrapper.Extensions
             }
         }
 
-        public static MethodCall ToMethodCall(this MethodCallExpression methodCallExpression)
+        public static MethodCallInfo ToMethodCall(this MethodCallExpression methodCallExpression)
         {
-            var result = new MethodCall
+            var result = new MethodCallInfo
             {
                 Name = methodCallExpression.Method.Name,
                 Args = new List<object>()

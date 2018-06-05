@@ -16,12 +16,7 @@ namespace UWPUI
             this.InitializeComponent();
             PackageFamilyNameTextBox.Text = Windows.ApplicationModel.Package.Current.Id.FamilyName;
         }
-
-        private void ExitBackground(object sender, RoutedEventArgs e)
-        {
-            Client.Current.ExitBackground();
-        }
-
+        
         private async void ShowWpfWindow(object sender, RoutedEventArgs e)
         {
             await Client.ServerProxy.ShowUwpWindow();

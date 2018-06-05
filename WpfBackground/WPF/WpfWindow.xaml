@@ -16,8 +16,6 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
-            <Button Click="OpenConnect">Connet</Button>
-            <Button Click="Exit">Exit</Button>
         </StackPanel>
         <ListView x:Name="ClipboardsListView" Grid.Row="1">
             <ListView.View>

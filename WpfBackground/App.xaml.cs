@@ -31,7 +31,7 @@ namespace WpfBackground
                 Shutdown();
                 return;
             }
-            Log.Prefix = $"[{Module.ModuleHandleHex}]";
+            Log.Prefix = $"[{Handle.ModuleHandleHex}]";
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppHelper.RegisterAutoRestart(() =>
             {
@@ -45,7 +45,7 @@ namespace WpfBackground
             }));
             this.MainWindow = AppHelper.Window;
 #if DEBUG
-            //WpfWindow.ShowWindow();
+            WpfWindow.ShowWindow();
 #endif
         }
 

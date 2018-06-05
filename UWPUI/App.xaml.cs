@@ -29,9 +29,9 @@ namespace UWPUI
             this.Suspending += OnSuspending;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.UnhandledException += App_UnhandledException;
-            Client.Init();
+            Client.Current.Init();
         }
-
+        
         private async void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
         {
             await(new MessageDialog(((Exception)e.ExceptionObject).Message)).ShowAsync();
@@ -68,7 +68,7 @@ namespace UWPUI
             }
             Window.Current.Activate();
         }
-
+        
         /// <summary>
         /// 在应用程序由最终用户正常启动时进行调用。
         /// 将在启动应用程序以打开特定文件等情况下使用。

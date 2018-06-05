@@ -13,6 +13,7 @@ namespace DataModel
     public interface IService
     {
         Task<bool> SetTopmost(bool topmost);
+        Task<bool> SetTopmostByTitle(string Title, bool topmost);
         Task ShowUwpWindow();
         Task Shutdown();
         Task SetClipboard(ClipboardItem clipboardItem);

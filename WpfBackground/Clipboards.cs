@@ -3,6 +3,8 @@ using DataModel;
 using System;
 using System.IO;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace WpfBackground
 {
@@ -11,7 +13,7 @@ namespace WpfBackground
         private static string _clipboards_folder;
         private static string _clipboards_file;
 
-        public static event Action<string> Changed;
+        public static event Action<ClipboardItem> Changed;
         public static bool IsListenning { get; private set; } = false;
 
         public static ClipboardContents Contents { get; private set; }
@@ -50,7 +52,22 @@ namespace WpfBackground
 
         private static void LoadClipboardsFile()
         {
-            Contents = XmlSerialization.ReadXmlFile<ClipboardContents>(_clipboards_file, true);
+            if (!File.Exists(_clipboards_file))
+            {
+                Contents = new ClipboardContents();
+            }
+            else
+            {
+                try
+                {
+                    Contents = XmlSerialization.ReadXmlFile<ClipboardContents>(_clipboards_file);
+                }
+                catch
+                {
+                    Contents = new ClipboardContents();
+                    File.Delete(_clipboards_file);
+                }
+            }
         }
 
         public static void WriteToClipboards()
@@ -62,15 +79,32 @@ namespace WpfBackground
         {
             if (IsListenning)
             {
-                var dataPackageView = Clipboard.GetContent();
-                Log.Info("Formats: " + String.Join(",", dataPackageView.AvailableFormats));
-                if (dataPackageView.Contains(StandardDataFormats.Text))
+                var data = Clipboard.GetContent();
+                Log.Info("Formats: " + string.Join(", ", data.AvailableFormats));
+                if (data.Contains(StandardDataFormats.Text))
                 {
-                    var text = await dataPackageView.GetTextAsync();
+                    var text = await data.GetTextAsync();
                     //TODO
                     if (text.Length > 10000) { return; }
-                    Contents.AddNewText(text);
-                    Changed?.Invoke(text);
+                    var item = new ClipboardItem(text);
+                    Changed?.Invoke(item);
+                }
+                else if (data.Contains(StandardDataFormats.Bitmap))
+                {
+                    var streamReference = await data.GetBitmapAsync();
+                    using (var imageStream = await streamReference.OpenReadAsync())
+                    {
+                        var reader = new DataReader(imageStream.GetInputStreamAt(0));
+                        await reader.LoadAsync((uint)imageStream.Size);
+                        var bytes = new byte[imageStream.Size];
+                        reader.ReadBytes(bytes);
+                        var item = new ClipboardItem()
+                        {
+                            Type = ClipboardContentType.Image,
+                            Base64 = bytes.ToBase64BinaryString(),
+                        };
+                        Changed?.Invoke(item);
+                    }
                 }
             }
         }

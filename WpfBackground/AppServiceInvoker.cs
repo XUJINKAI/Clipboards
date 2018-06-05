@@ -1,4 +1,5 @@
 ﻿using CommonLibrary;
+using CommonLibrary.Extensions;
 using DataModel;
 using MethodWrapper;
 using MethodWrapper.Extensions;
@@ -75,13 +76,24 @@ namespace WpfBackground
             App.Current.Dispatcher.Invoke(async () =>
             {
                 var func = args.Request.Message.ToMethodCall();
-                Log.Verbose($"Recived {func.Name}");
-                var excuteResult = func.Excute(ExcuteObject);
+                Log.Verbose($"[Recive] {func.Name}");
+                object excuteResult;
+                try
+                {
+                    excuteResult = func.Excute(ExcuteObject);
+                    Log.Debug("[ExcuteResult] " + excuteResult.ToString());
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.ToStringLong());
+                    excuteResult = null;
+                }
                 if (excuteResult != null)
                 {
-                    var response = (new MethodCall() { Result = excuteResult }).ToValueSet();
+                    Log.Debug("[SendingResponse]");
+                    var response = (new MethodCallInfo() { Name = func.Name, Result = excuteResult }).ToValueSet();
                     var status = await args.Request.SendResponseAsync(response);
-                    Log.Verbose($"Response Status {status}");
+                    Log.Verbose($"[ResponseStatus] {status}");
                 }
                 Recived?.Invoke(args);
             });
@@ -89,14 +101,14 @@ namespace WpfBackground
         
         public async Task<object> InvokeAsync(MethodInfo tartgetMethod, object[] args)
         {
-            MethodCall methodCall = new MethodCall()
+            MethodCallInfo methodCall = new MethodCallInfo()
             {
                 Name = tartgetMethod.Name,
                 Args = new List<object>(args),
             };
             ValueSet set = methodCall.ToValueSet();
             AppServiceResponse appServiceResponse = await _connection.SendMessageAsync(set);
-            MethodCall result = appServiceResponse.Message.ToMethodCall();
+            MethodCallInfo result = appServiceResponse.Message.ToMethodCall();
             return result?.Result;
         }
     }

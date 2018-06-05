@@ -11,6 +11,7 @@
     <Grid>
         <Grid.Resources>
             <local:TextDisplayConverter x:Key="TextDisplay"></local:TextDisplayConverter>
+            <local:Base64ImageDisplayConverter x:Key="Base64ImageDisplay"></local:Base64ImageDisplayConverter>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
@@ -18,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <CommandBar Background="Transparent">
-            <AppBarButton x:Name="TopmostButton" Icon="UnPin" Label="Topmost" Click="TopmostToggle"/>
+            <AppBarButton x:Name="TopmostButton" Icon="UnPin" Label="Topmost" Click="TopmostButton_Click"/>
             <AppBarSeparator></AppBarSeparator>
             <AppBarButton Icon="Copy" Label="Copy" Click="CopySelect"/>
             <CommandBar.SecondaryCommands>
@@ -36,6 +37,7 @@
                                    Grid.Column="1" TextWrapping="Wrap"
                                    Tag="{Binding}"
                                    DoubleTapped="ClipboardItem_DoubleTapped"></TextBlock>
+                        <Image Source="{Binding Base64, Converter={StaticResource Base64ImageDisplay}}"></Image>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

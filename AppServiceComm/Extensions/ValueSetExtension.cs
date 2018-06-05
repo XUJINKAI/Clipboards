@@ -6,7 +6,7 @@ namespace MethodWrapper.Extensions
     {
         public const string FuncMethodBase64String = "MethodCall";
 
-        public static ValueSet ToValueSet(this MethodCall methodCall)
+        public static ValueSet ToValueSet(this MethodCallInfo methodCall)
         {
             var set = new ValueSet
             {
@@ -15,10 +15,10 @@ namespace MethodWrapper.Extensions
             return set;
         }
 
-        public static MethodCall ToMethodCall(this ValueSet set)
+        public static MethodCallInfo ToMethodCall(this ValueSet set)
         {
             string b64 = set[FuncMethodBase64String] as string;
-            var method = BinarySerialization.FromBase64BinaryString<MethodCall>(b64);
+            var method = BinarySerialization.FromBase64BinaryString<MethodCallInfo>(b64);
             return method;
         }
     }

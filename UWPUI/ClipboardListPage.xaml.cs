@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -28,13 +29,18 @@ namespace UWPUI
         public ClipboardListPage()
         {
             this.InitializeComponent();
+            Client.Current.TopmostChanged += Current_TopmostChanged;
             ClipboardListView.ItemsSource = Client.ClipboardContents;
-            GetList();
         }
-        
+
         private async void CopySelect(object sender, RoutedEventArgs e)
         {
-            if (ClipboardListView.SelectedItems.Count > 0)
+            if (ClipboardListView.SelectedItems.Count == 1)
+            {
+                var item = ClipboardListView.SelectedItem as ClipboardItem;
+                await Client.ServerProxy.SetClipboard(item);
+            }
+            else if (ClipboardListView.SelectedItems.Count > 1)
             {
                 var list = ClipboardListView.SelectedItems.Cast<ClipboardItem>();
                 var str = list.Aggregate("", (sum, next) => $"{sum}\r\n{next.Text}");
@@ -50,17 +56,6 @@ namespace UWPUI
             await Client.ServerProxy.SetClipboard(item);
         }
 
-        private bool isTopmost = false;
-
-        private async void TopmostToggle(object sender, RoutedEventArgs e)
-        {
-            TopmostButton.IsEnabled = false;
-            isTopmost = !isTopmost;
-            var x = await Client.ServerProxy.SetTopmost(isTopmost);
-            TopmostButton.Icon = new SymbolIcon(x ? Symbol.Pin : Symbol.UnPin);
-            TopmostButton.IsEnabled = true;
-        }
-
         private async void ClearLists(object sender, RoutedEventArgs e)
         {
             var x = await Client.ServerProxy.ClearClipboardList();
@@ -74,5 +69,18 @@ namespace UWPUI
         {
             await Client.Current.RequestClipboardContentsAsync();
         }
+
+        private async void TopmostButton_Click(object sender, RoutedEventArgs e)
+        {
+            TopmostButton.IsEnabled = false;
+            await Client.Current.SetTopmostAsync(!Client.Current.IsTopmost);
+            TopmostButton.IsEnabled = true;
+        }
+
+        private void Current_TopmostChanged(bool obj)
+        {
+            TopmostButton.Icon = new SymbolIcon(obj ? Symbol.Pin : Symbol.UnPin);
+        }
+
     }
 }

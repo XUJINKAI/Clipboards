@@ -10,9 +10,9 @@ namespace UWPUI
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             string x = value as string ?? "";
-            x = System.Text.RegularExpressions.Regex.Replace(x, @"\s+", "");
-            string post = x.Length > MaxLength ? x.Substring(0, MaxLength) + "......" : x;
+            string trim = System.Text.RegularExpressions.Regex.Replace(x, @"\s+", "");
             string pre = $"[{x.Length}]";
+            string post = trim.Length > MaxLength ? trim.Substring(0, MaxLength) + "......" : trim;
             return $"{pre,-7}{post}";
         }
 

@@ -16,8 +16,9 @@
         <NavigationView.MenuItems>
             <!--https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.symbol-->
             <NavigationViewItem Icon="AlignCenter" Content="History" Tag="History" />
-            <NavigationViewItemSeparator/>
             <NavigationViewItem Icon="Edit" Content="Log" Tag="Log" />
+            <NavigationViewItemSeparator/>
+            <NavigationViewItem Icon="Cancel" Content="Exit" Tag="Exit"/>
         </NavigationView.MenuItems>
         <Frame x:Name="rootFrame">
         </Frame>
