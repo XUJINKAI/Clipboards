@@ -1,8 +1,14 @@
 ﻿using DataModel;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
+using XJK;
 using XJK.MethodWrapper;
 using XJK.Serializers;
 using XJK.SysX;
@@ -15,13 +21,46 @@ namespace WpfBackground
         public static AppServiceInvoker AppServiceInvoker { get; private set; }
         public static IClient ClientProxy { get; private set; }
 
-        public Service(string appservername, string packagefamilyname)
+        private static Setting _setting = new Setting();
+        public static Setting Setting
         {
-            Current = this;
-            AppServiceInvoker = new AppServiceInvoker(appservername, packagefamilyname, this);
+            get => _setting;
+            set
+            {
+                _setting = value;
+                Clipboards.Contents.LimitToCapacity(value.ClipboardCapacity);
+            }
+        }
+
+        private Service() { }
+        
+        public static void Init(string appservername, string packagefamilyname)
+        {
+            Current = new Service();
+            LoadSetting();
+            AppServiceInvoker = new AppServiceInvoker(appservername, packagefamilyname, Current);
             ClientProxy = MethodProxy.CreateProxy<IClient>(AppServiceInvoker);
-            Clipboards.Changed += Clipboards_Changed;
-            Clipboards.StartListen();
+            Log.Prefix = $"[{Handle.ModuleHandleHex}]";
+        }
+        
+        public static void LoadSetting()
+        {
+            if (File.Exists(App.SettingXmlFilePath))
+            {
+                try
+                {
+                    Setting = XmlSerialization.ReadXmlFile<Setting>(App.SettingXmlFilePath);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("LoadSetting", ex);
+                }
+            }
+        }
+
+        public static void WriteSetting()
+        {
+            XmlSerialization.WriteXmlFile(Setting, App.SettingXmlFilePath);
         }
 
         public void Dispose()
@@ -32,12 +71,6 @@ namespace WpfBackground
             }
         }
 
-        private void Clipboards_Changed(ClipboardItem item)
-        {
-            ClientProxy.AddClipboardItem(item);
-        }
-
-
         public Task ShowUwpWindow()
         {
             WpfWindow.ShowWindow();
@@ -46,7 +79,17 @@ namespace WpfBackground
 
         public Task Shutdown()
         {
-            App.ShutDown();
+            WriteDataFile();
+            AppHelper.DisposeHelperWindow();
+            App.Current.Shutdown();
+            return Task.FromResult<object>(null);
+        }
+
+        public Task WriteDataFile()
+        {
+            Clipboards.WriteClipboardsFile();
+            WriteSetting();
+            Log.Debug("WriteDataFile");
             return Task.FromResult<object>(null);
         }
 
@@ -63,7 +106,13 @@ namespace WpfBackground
 
         public Task<Setting> GetSetting()
         {
-            return Task.FromResult(new Setting());
+            return Task.FromResult(Setting);
+        }
+
+        public Task<bool> SetSetting(Setting setting)
+        {
+            Setting = setting;
+            return Task.FromResult(true);
         }
 
         public Task<bool> SetTopmost(bool topmost)
@@ -84,21 +133,58 @@ namespace WpfBackground
 
         public Task SetClipboard(ClipboardItem clipboardItem)
         {
-            DataPackage dataPackage;
+            DataPackage dataPackage = new DataPackage();
+            string text = clipboardItem.PureText;
+            if (!string.IsNullOrEmpty(text))
+            {
+                dataPackage.SetText(text);
+            }
+            var imagebytes = clipboardItem.ImageBytes;
+            if (imagebytes != null && imagebytes.Length != 0)
+            {
+                var randomStream = Converter.BytesToRandomAccessStream(imagebytes);
+                dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(randomStream));
+            }
             switch (clipboardItem.Type)
             {
-                case ClipboardContentType.Text:
-                    dataPackage = new DataPackage();
-                    dataPackage.SetText(clipboardItem.Text);
-                    Clipboard.SetContent(dataPackage);
+                case ClipboardContentType.Html:
+                    dataPackage.SetHtmlFormat(clipboardItem.StringContent);
                     break;
-                case ClipboardContentType.Image:
-                    var bytes = BinarySerialization.FromBase64BinaryString<byte[]>(clipboardItem.Base64);
-                    var randomStream = Converter.BytesToRandomAccessStream(bytes);
-                    dataPackage = new DataPackage();
-                    dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(randomStream));
-                    Clipboard.SetContent(dataPackage);
+                case ClipboardContentType.Rtf:
+                    dataPackage.SetRtf(clipboardItem.StringContent);
                     break;
+            }
+            Clipboard.SetContent(dataPackage);
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SetClipboard(List<ClipboardItem> list)
+        {
+            if (list.Count == 1)
+            {
+                return SetClipboard(list[0]);
+            }
+            else if (list.Count > 1)
+            {
+                DataPackage dataPackage = new DataPackage();
+                var xml = new XmlDocument();
+                var body = xml.CreateElement("div");
+                xml.AppendChild(body);
+                string htmlpattern = @"\<body\>(.*)\<\/body\>";
+                Regex htmlreg = new Regex(htmlpattern, RegexOptions.IgnoreCase);
+                foreach (var x in list)
+                {
+                    string text = x.PureText;
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        var p = xml.CreateElement("p");
+                        p.InnerText = text;
+                        body.AppendChild(p);
+                    }
+                }
+                dataPackage.SetText(xml.InnerText);
+                //dataPackage.SetHtmlFormat(HtmlFormatHelper.CreateHtmlFormat(xml.InnerXml));
+                Clipboard.SetContent(dataPackage);
             }
             return Task.FromResult<object>(null);
         }

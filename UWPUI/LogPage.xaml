@@ -9,9 +9,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <TextBlock Margin="20" TextWrapping="Wrap"
-                   IsTextSelectionEnabled="True" x:Name="LogTextBlock"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <TextBlock Margin="20" TextWrapping="NoWrap" x:Name="LogText" IsTextSelectionEnabled="True">
+                <Span x:Name="LogTextSpan">
+                    
+                </Span>
+            </TextBlock>
         </ScrollViewer>
     </Grid>
 </Page>

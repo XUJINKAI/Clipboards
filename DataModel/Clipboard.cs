@@ -6,91 +6,38 @@ using XJK.Serializers;
 namespace DataModel
 {
     [Serializable]
-    public enum ClipboardContentType
+    public class ClipboardWrapper
     {
-        Text,
-        Image,
-    }
-
-    [Serializable]
-    public class ClipboardItem
-    {
-        public string FileName { get; set; }
-        public DateTime Time { get; set; }
-        public ClipboardContentType Type { get; set; }
-        public string Base64 { get; set; }
-
-        [XmlIgnore]
-        public string Text
-        {
-            get
-            {
-                if (Type == ClipboardContentType.Text)
-                {
-                    return BinarySerialization.FromBase64BinaryString<string>(Base64);
-                }
-                else
-                {
-                    return $"<{Type}>";
-                }
-            }
-            set
-            {
-                Type = ClipboardContentType.Text;
-                Base64 = value.ToBase64BinaryString();
-            }
-        }
-        
-        public ClipboardItem()
-        {
-            Time = DateTime.Now;
-        }
-
-        public ClipboardItem(string text) : this()
-        {
-            Text = text;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is ClipboardItem item && item.Type == Type && item.Base64 == Base64;
-        }
-
-        public override int GetHashCode()
-        {
-            return $"[ClipboardItem]{Type}:{Base64}".GetHashCode();
-        }
+        public ClipboardContents Contents { get; set; }
     }
 
     [Serializable]
     public class ClipboardContents : ObservableCollection<ClipboardItem>
     {
-        private int _capacity;
-
-        public int Capacity
+        public void LimitToCapacity(int capacity)
         {
-            get => _capacity; set
+            if (capacity > 0)
             {
-                _capacity = value;
-                while (Count > _capacity)
+                while (Count > capacity)
                 {
-                    RemoveAt(0);
+                    RemoveAt(Count - 1);
                 }
             }
         }
 
         public ClipboardContents()
         {
-            Capacity = 50;
+
         }
 
-        public void AddNew(ClipboardItem item)
+        public void AddNew(ClipboardItem item, int capacity)
         {
             if (Contains(item))
             {
                 Remove(item);
             }
             base.Insert(0, item);
+            LimitToCapacity(capacity);
         }
     }
 }

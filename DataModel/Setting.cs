@@ -7,6 +7,7 @@ namespace DataModel
     [Serializable]
     public class Setting
     {
-        public int ClipboardsCapacity { get; set; } = 50;
+        public int ClipboardCapacity { get; set; } = 10;
+        public int ClipboardItemLimitSizeKb { get; set; } = 3000;
     }
 }

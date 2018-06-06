@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Blend for Visual Studio 15
 VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UWPUI", "UWPUI\UWPUI.csproj", "{6E1AA32B-573A-46DC-BC68-59C0701953BA}"
@@ -9,13 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfBackground", "WpfBackgro
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "Clipboards", "Clipboards\Clipboards.wapproj", "{9903104B-B310-4F00-A055-66C0FC376367}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataModel", "DataModel\DataModel.csproj", "{667E86AC-4249-4953-8334-7747746769ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel\DataModel.csproj", "{667E86AC-4249-4953-8334-7747746769ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Native", "Common\Common.Native\Common.Native.csproj", "{BFABDD52-F228-490D-A7CF-C019DF252D5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Standard", "Common\Common.Standard\Common.Standard.csproj", "{B0881417-11C2-4032-B161-2F023D28FE6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Standard", "Common\Common.Standard\Common.Standard.csproj", "{B0881417-11C2-4032-B161-2F023D28FE6E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MethodWrapper", "MethodWrapper\MethodWrapper\MethodWrapper.csproj", "{C1290BDB-603C-490D-860F-0E08E80725AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MethodWrapper", "MethodWrapper\MethodWrapper\MethodWrapper.csproj", "{C1290BDB-603C-490D-860F-0E08E80725AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

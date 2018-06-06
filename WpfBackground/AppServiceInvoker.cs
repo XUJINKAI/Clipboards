@@ -1,5 +1,5 @@
 ﻿using System;
-using XJK.CommModel;
+using XJK.CommunicationModel;
 
 namespace WpfBackground
 {

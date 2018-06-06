@@ -7,8 +7,10 @@ using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using XJK;
-using XJK.CommModel;
+using XJK.CommunicationModel;
+using XJK.MethodWrapper;
 
 namespace UWPUI
 {
@@ -49,12 +51,21 @@ namespace UWPUI
             {
                 await LaunchBackgroundProcessAsync();
             }
-            else
+        }
+
+        protected override async Task BeforeSendMessage(MethodCallInfo methodCallInfo)
+        {
+            await base.BeforeSendMessage(methodCallInfo);
+            if (!IsConnceted())
             {
-                AppServiceDeferral.Complete();
+                var msg = new MessageDialog("Not Connected");
+                msg.Commands.Add(new UICommand("Retry", new UICommandInvokedHandler(async(IUICommand command) =>
+                {
+                    await LaunchBackgroundProcessAsync();
+                })));
             }
         }
-        
+
         protected override async void DispatchInvoke(Action action)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=> { action(); });

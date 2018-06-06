@@ -13,10 +13,13 @@ namespace UWPUI
     /// </summary>
     public sealed partial class ClipboardListPage : Page
     {
+        public static bool IsTopmost = false;
+
         public ClipboardListPage()
         {
             this.InitializeComponent();
             Client.Current.TopmostChanged += Current_TopmostChanged;
+            UpdateTopmostSymbolIcon();
             ClipboardListView.ItemsSource = Client.ClipboardContents;
         }
 
@@ -29,17 +32,16 @@ namespace UWPUI
             }
             else if (ClipboardListView.SelectedItems.Count > 1)
             {
-                var list = ClipboardListView.SelectedItems.Cast<ClipboardItem>();
-                var str = list.Aggregate("", (sum, next) => $"{sum}\r\n{next.Text}");
-                await Client.ServerProxy.SetClipboard(new ClipboardItem(str));
+                var list = ClipboardListView.SelectedItems.Cast<ClipboardItem>().ToList();
+                await Client.ServerProxy.SetClipboard(list);
             }
         }
 
         private async void ClipboardItem_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             ClipboardListView.SelectedItem = null;
-            var TextBlock = (TextBlock)sender;
-            var item = TextBlock.Tag as ClipboardItem;
+            var Grid = (Grid)sender;
+            var item = Grid.Tag as ClipboardItem;
             await Client.ServerProxy.SetClipboard(item);
         }
 
@@ -66,8 +68,18 @@ namespace UWPUI
 
         private void Current_TopmostChanged(bool obj)
         {
-            TopmostButton.Icon = new SymbolIcon(obj ? Symbol.Pin : Symbol.UnPin);
+            IsTopmost = obj;
+            UpdateTopmostSymbolIcon();
         }
 
+        private void UpdateTopmostSymbolIcon()
+        {
+            TopmostButton.Icon = new SymbolIcon(IsTopmost ? Symbol.Pin : Symbol.UnPin);
+        }
+
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Client.ServerProxy.WriteDataFile();
+        }
     }
 }

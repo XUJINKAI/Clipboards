@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
+using XJK;
 
 namespace UWPUI
 {
@@ -23,6 +24,7 @@ namespace UWPUI
             this.Suspending += OnSuspending;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.UnhandledException += App_UnhandledException;
+            Log.DebugConsoleOutput = true;
             Client.Current.Init();
         }
         

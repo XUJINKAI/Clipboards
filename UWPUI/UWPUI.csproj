@@ -78,14 +78,12 @@
     <Compile Include="ClipboardListPage.xaml.cs">
       <DependentUpon>ClipboardListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImageDisplayConverter.cs" />
     <Compile Include="LogPage.xaml.cs">
       <DependentUpon>LogPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TextDisplayConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

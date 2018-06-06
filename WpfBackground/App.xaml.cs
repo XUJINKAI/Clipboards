@@ -16,36 +16,34 @@ namespace WpfBackground
         public const string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
         public const string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
 
-        public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static readonly string AppDataFolder = FS.CreateFolder(Path.Combine(ApplicationDataSpecialFolder, "Clipboards"));
-        public static readonly string ClipboardsFolder = FS.CreateFolder(Path.Combine(AppDataFolder, "Clipboards"));
-        public static readonly string ClipboardsXmlFilePath = Path.Combine(AppDataFolder, "Clipboards.xml");
-
-        private static Service Service;
-
+        public static readonly string SettingXmlFilePath = Path.Combine(AppDataFolder, "Setting.xml");
+        public static readonly string ClipboardXmlFilePath = Path.Combine(AppDataFolder, "Clipboards.xml");
+        public static readonly string ClipboardContentFolder = FS.CreateFolder(Path.Combine(AppDataFolder, "ClipboardContents"));
+        
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Log.DebugConsoleOutput = true;
             if (!AppHelper.IsNewInstance(AppUniqueId))
             {
                 AppHelper.BroadcastMessage(MsgConnectAppService);
                 Shutdown();
                 return;
             }
-            Log.Prefix = $"[{Handle.ModuleHandleHex}]";
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             AppHelper.RegisterAutoRestart(() =>
             {
-                Shutdown();
+                Service.Current.Shutdown();
             });
-            Clipboards.Init(ClipboardsXmlFilePath, ClipboardsFolder);
-            Service = new Service(AppServerName, PackageFamilyName);
-            AppHelper.RegisterReciveMessage(MsgConnectAppService, (Action)(() =>
+            AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
             {
                 Service.AppServiceInvoker.TryConnect();
-            }));
+            });
+            Clipboards.Init(ClipboardXmlFilePath, ClipboardContentFolder);
+            Service.Init(AppServerName, PackageFamilyName);
             this.MainWindow = AppHelper.Window;
-            Log.AddDebugConsoleListener();
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
@@ -55,14 +53,6 @@ namespace WpfBackground
         {
             Exception exp = (Exception)e.ExceptionObject;
             MessageBox.Show(exp.Message);
-        }
-
-        public static void ShutDown()
-        {
-            Clipboards.WriteToClipboards();
-            AppHelper.DisposeHelperWindow();
-            Service.Dispose();
-            App.Current.Shutdown();
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using DataModel;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using XJK;
 
 namespace WpfBackground
@@ -23,6 +25,7 @@ namespace WpfBackground
             if(Instance == null)
             {
                 Instance = new WpfWindow();
+                Instance.DataContext = Instance;
                 Log.AutoStringListener += Log_AutoStringListener;
                 Log.AutoFlush = true;
             }
@@ -47,6 +50,27 @@ namespace WpfBackground
         {
             InitializeComponent();
             ClipboardsListView.ItemsSource = Clipboards.Contents;
+        }
+
+        private void Copy_MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var item = ClipboardsListView.SelectedItem as ClipboardItem;
+            Service.Current.SetClipboard(item);
+        }
+
+        private void Exit(object sender, RoutedEventArgs e)
+        {
+            Service.Current.Shutdown();
+        }
+
+        private void Clear(object sender, RoutedEventArgs e)
+        {
+            Service.Current.ClearClipboardList();
+        }
+
+        private void Save(object sender, RoutedEventArgs e)
+        {
+            Service.Current.WriteDataFile();
         }
     }
 }

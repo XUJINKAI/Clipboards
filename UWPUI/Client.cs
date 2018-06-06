@@ -1,5 +1,6 @@
 ﻿using DataModel;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using XJK;
@@ -35,13 +36,12 @@ namespace UWPUI
 
         private Client()
         {
-            Log.Prefix = "[ClipboardsUwp]";
-            Log.AddDebugConsoleListener();
-            Log.AutoFlush = true;
         }
 
         public async void Init()
         {
+            Log.Prefix = "[ClipboardsUwp]";
+            Log.AutoFlush = true;
             await AppServiceInvoker.EnsureConnectedAsync();
         }
 
@@ -91,9 +91,16 @@ namespace UWPUI
             }
         }
         
-        public Task AddClipboardItem(ClipboardItem clipboardItem)
+        public Task ClipboardCollectionChange(List<ClipboardItem> addItems, List<ClipboardItem> removeItems)
         {
-            ClipboardContents.AddNew(clipboardItem);
+            foreach (var x in removeItems)
+            {
+                ClipboardContents.Remove(x);
+            }
+            foreach (var x in addItems)
+            {
+                ClipboardContents.AddNew(x, 0);
+            }
             return Task.FromResult<Object>(null);
         }
     }

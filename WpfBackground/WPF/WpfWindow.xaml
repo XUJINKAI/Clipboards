@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfBackground"
         mc:Ignorable="d"
+        Topmost="False"
         Title="MainWindow" Height="450" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
@@ -16,14 +17,25 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+            <Button Content="Exit" Click="Exit"></Button>
+            <Button Content="Clear" Click="Clear"></Button>
+            <Button Content="Save" Click="Save"></Button>
+            <CheckBox IsChecked="{Binding Topmost}" Content="Topmost"></CheckBox>
         </StackPanel>
         <ListView x:Name="ClipboardsListView" Grid.Row="1">
+            <ListView.Resources>
+                <ContextMenu x:Key="ItemMenu">
+                    <MenuItem Header="Copy" Click="Copy_MenuItem_Click"></MenuItem>
+                </ContextMenu>
+            </ListView.Resources>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Text" Width="300">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Text}"></TextBlock>
+                                <Grid Tag="{Binding}" ContextMenu="{StaticResource ItemMenu}">
+                                    <TextBlock Text="{Binding TextDisplay}"></TextBlock>
+                                </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
