@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" IgnorableNamespaces="uap mp rescap desktop">
-  <Identity Name="55774JinkaiXu.57013CAEE6225" Publisher="CN=4E067DC8-EEF0-4BB0-9BF9-483C9CA058ED" Version="1.1.0.0" />
+  <Identity Name="55774JinkaiXu.57013CAEE6225" Publisher="CN=4E067DC8-EEF0-4BB0-9BF9-483C9CA058ED" Version="1.1.4.0" />
   <Properties>
     <DisplayName>Clipboards</DisplayName>
     <PublisherDisplayName>Jinkai Xu</PublisherDisplayName>
