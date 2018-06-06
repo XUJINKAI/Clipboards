@@ -1,13 +1,9 @@
-﻿using CommonLibrary;
-using DataModel;
-using MethodWrapper;
+﻿using DataModel;
 using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Popups;
+using XJK;
+using XJK.MethodWrapper;
 
 namespace UWPUI
 {
@@ -58,7 +54,7 @@ namespace UWPUI
         {
             App.Current.Exit();
             AppServiceInvoker.AutoLaunchProcess = false;
-            if (AppServiceInvoker.Connection != null)
+            if (AppServiceInvoker.IsConnceted())
             {
                 await ServerProxy.Shutdown();
             }

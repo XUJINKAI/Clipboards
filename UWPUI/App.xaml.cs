@@ -1,16 +1,10 @@
 ﻿using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Background;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Popups;
-using Windows.UI.Core;
-using CommonLibrary;
-using DataModel;
-using System.Threading.Tasks;
 
 namespace UWPUI
 {
@@ -45,7 +39,7 @@ namespace UWPUI
         //
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
-            AppServiceInvoker.OnBackgroundActivated(args);
+            AppServiceInvoker.Current.OnBackgroundActivated(args);
         }
         
         // launch by protocol

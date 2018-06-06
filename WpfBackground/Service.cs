@@ -1,13 +1,11 @@
-﻿using CommonLibrary;
-using DataModel;
-using MethodWrapper;
+﻿using DataModel;
 using System;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
+using XJK.MethodWrapper;
+using XJK.Serializers;
+using XJK.SysX;
 
 namespace WpfBackground
 {
@@ -16,7 +14,7 @@ namespace WpfBackground
         public static Service Current { get; private set; }
         public static AppServiceInvoker AppServiceInvoker { get; private set; }
         public static IClient ClientProxy { get; private set; }
-        
+
         public Service(string appservername, string packagefamilyname)
         {
             Current = this;
@@ -51,7 +49,7 @@ namespace WpfBackground
             App.ShutDown();
             return Task.FromResult<object>(null);
         }
-        
+
         public Task<ClipboardContents> GetClipboardContents()
         {
             return Task.FromResult(Clipboards.Contents);
@@ -84,7 +82,7 @@ namespace WpfBackground
             return Task.FromResult(result);
         }
 
-        public async Task SetClipboard(ClipboardItem clipboardItem)
+        public Task SetClipboard(ClipboardItem clipboardItem)
         {
             DataPackage dataPackage;
             switch (clipboardItem.Type)
@@ -96,21 +94,13 @@ namespace WpfBackground
                     break;
                 case ClipboardContentType.Image:
                     var bytes = BinarySerialization.FromBase64BinaryString<byte[]>(clipboardItem.Base64);
+                    var randomStream = Converter.BytesToRandomAccessStream(bytes);
                     dataPackage = new DataPackage();
-                    var randomStream = await ConvertTo(bytes);
                     dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromStream(randomStream));
                     Clipboard.SetContent(dataPackage);
                     break;
             }
+            return Task.FromResult<object>(null);
         }
-
-        internal static async Task<InMemoryRandomAccessStream> ConvertTo(byte[] arr)
-        {
-            InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
-            await randomAccessStream.WriteAsync(arr.AsBuffer());
-            randomAccessStream.Seek(0);
-            return randomAccessStream;
-        }
-
     }
 }

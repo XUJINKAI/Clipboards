@@ -113,10 +113,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppServiceComm\MethodWrapper.csproj">
-      <Project>{268A4442-2225-450F-8A7B-18AF48FDA34B}</Project>
-      <Name>MethodWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.Native\Common.Native.csproj">
       <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
       <Name>Common.Native</Name>
@@ -128,6 +124,10 @@
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>
       <Name>DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MethodWrapper\MethodWrapper\MethodWrapper.csproj">
+      <Project>{C1290BDB-603C-490D-860F-0E08E80725AB}</Project>
+      <Name>MethodWrapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,9 @@
-﻿using CommonLibrary;
-using DataModel;
+﻿using DataModel;
 using System;
 using System.IO;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
-using Windows.UI.Xaml.Media.Imaging;
+using XJK;
+using XJK.Serializers;
 
 namespace WpfBackground
 {
@@ -92,19 +91,14 @@ namespace WpfBackground
                 else if (data.Contains(StandardDataFormats.Bitmap))
                 {
                     var streamReference = await data.GetBitmapAsync();
-                    using (var imageStream = await streamReference.OpenReadAsync())
+                    var randomAccessStreamWithContentType = await streamReference.OpenReadAsync();
+                    var bytes = Converter.RandomAccessStreamToBytes(randomAccessStreamWithContentType);
+                    var item = new ClipboardItem()
                     {
-                        var reader = new DataReader(imageStream.GetInputStreamAt(0));
-                        await reader.LoadAsync((uint)imageStream.Size);
-                        var bytes = new byte[imageStream.Size];
-                        reader.ReadBytes(bytes);
-                        var item = new ClipboardItem()
-                        {
-                            Type = ClipboardContentType.Image,
-                            Base64 = bytes.ToBase64BinaryString(),
-                        };
-                        Changed?.Invoke(item);
-                    }
+                        Type = ClipboardContentType.Image,
+                        Base64 = bytes.ToBase64BinaryString(),
+                    };
+                    Changed?.Invoke(item);
                 }
             }
         }

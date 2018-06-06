@@ -1,7 +1,8 @@
-﻿using CommonLibrary;
-using System;
+﻿using System;
 using System.IO;
 using System.Windows;
+using XJK;
+using XJK.SysX;
 
 namespace WpfBackground
 {
@@ -44,6 +45,7 @@ namespace WpfBackground
                 Service.AppServiceInvoker.TryConnect();
             }));
             this.MainWindow = AppHelper.Window;
+            Log.AddDebugConsoleListener();
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif

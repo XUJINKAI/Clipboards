@@ -1,7 +1,6 @@
-﻿using CommonLibrary;
-using DataModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
+using XJK;
 
 namespace WpfBackground
 {

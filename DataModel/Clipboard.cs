@@ -1,7 +1,7 @@
-﻿using CommonLibrary;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Xml.Serialization;
+using XJK.Serializers;
 
 namespace DataModel
 {
@@ -15,6 +15,7 @@ namespace DataModel
     [Serializable]
     public class ClipboardItem
     {
+        public string FileName { get; set; }
         public DateTime Time { get; set; }
         public ClipboardContentType Type { get; set; }
         public string Base64 { get; set; }

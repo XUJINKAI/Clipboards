@@ -135,10 +135,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AppServiceComm\MethodWrapper.csproj">
-      <Project>{268a4442-2225-450f-8a7b-18af48fda34b}</Project>
-      <Name>MethodWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.Standard\Common.Standard.csproj">
       <Project>{b0881417-11c2-4032-b161-2f023d28fe6e}</Project>
       <Name>Common.Standard</Name>
@@ -146,6 +142,10 @@
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>
       <Name>DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MethodWrapper\MethodWrapper\MethodWrapper.csproj">
+      <Project>{C1290BDB-603C-490D-860F-0E08E80725AB}</Project>
+      <Name>MethodWrapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
