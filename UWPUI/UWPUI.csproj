@@ -129,21 +129,24 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.4</Version>
+      <Version>6.1.5</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reflection.DispatchProxy">
+      <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.Standard\Common.Standard.csproj">
-      <Project>{b0881417-11c2-4032-b161-2f023d28fe6e}</Project>
-      <Name>Common.Standard</Name>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\AOP\AOP.csproj">
+      <Project>{b7d7aab0-9020-45cf-9469-ae0babcd8aac}</Project>
+      <Name>AOP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\Common\Common.csproj">
+      <Project>{ead1bc5b-315c-4cb0-aa6a-35f1739e197c}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>
       <Name>DataModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MethodWrapper\MethodWrapper\MethodWrapper.csproj">
-      <Project>{C1290BDB-603C-490D-860F-0E08E80725AB}</Project>
-      <Name>MethodWrapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +164,7 @@
     <NoWarn>;2008</NoWarn>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>

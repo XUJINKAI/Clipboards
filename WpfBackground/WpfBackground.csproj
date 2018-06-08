@@ -153,21 +153,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.Native\Common.Native.csproj">
-      <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
-      <Name>Common.Native</Name>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\AOP\AOP.csproj">
+      <Project>{b7d7aab0-9020-45cf-9469-ae0babcd8aac}</Project>
+      <Name>AOP</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common.Standard\Common.Standard.csproj">
-      <Project>{b0881417-11c2-4032-b161-2f023d28fe6e}</Project>
-      <Name>Common.Standard</Name>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\Common\Common.csproj">
+      <Project>{ead1bc5b-315c-4cb0-aa6a-35f1739e197c}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\dotNetFramework\SysX\SysX.csproj">
+      <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
+      <Name>SysX</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>
       <Name>DataModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MethodWrapper\MethodWrapper\MethodWrapper.csproj">
-      <Project>{C1290BDB-603C-490D-860F-0E08E80725AB}</Project>
-      <Name>MethodWrapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

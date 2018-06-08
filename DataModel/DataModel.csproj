@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <FileUpgradeFlags>
@@ -9,7 +9,11 @@
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.Standard\Common.Standard.csproj" />
+    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\AOP\AOP.csproj" />
+    <ProjectReference Include="..\..\XJKdotNetLibrary\Common\Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.WindowsRuntime">

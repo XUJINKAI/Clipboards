@@ -1,6 +1,3 @@
-[submodule "Common"]
-	path = Common
-	url = https://github.com/xujinkai-net/Common.git
-[submodule "MethodWrapper"]
-	path = MethodWrapper
-	url = https://github.com/xujinkai-net/MethodWrapper.git
+[submodule "XJKdotNetLibrary"]
+	path = "../XJKdotNetLibrary"
+	url = https://github.com/XUJINKAI/XJKdotNetLibrary.git
