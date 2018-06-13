@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using XJK;
 using XJK.SysX;
+using XJK.WPF;
 
 namespace WpfBackground
 {
@@ -25,34 +27,27 @@ namespace WpfBackground
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Log.DebugConsoleOutput = true;
-            if (!AppHelper.IsNewInstance(AppUniqueId))
+            Log.ListenSystemDiagnosticsLog();
+            if (!SingleInstance.IsNewInstance(AppUniqueId))
             {
-                AppHelper.BroadcastMessage(MsgConnectAppService);
+                WinMsg.BroadcastMessage(MsgConnectAppService);
                 Shutdown();
                 return;
             }
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            AppHelper.RegisterAutoRestart(() =>
+            WinMsg.RegisterAutoRestart(() =>
             {
                 Service.Current.Shutdown();
             });
-            AppHelper.RegisterReciveMessage(MsgConnectAppService, () =>
+            WinMsg.RegisterReciveMessage(MsgConnectAppService, () =>
             {
                 Service.AppServiceInvoker.TryConnect();
             });
             Clipboards.Init(ClipboardXmlFilePath, ClipboardContentFolder);
             Service.Init(AppServerName, PackageFamilyName);
-            this.MainWindow = AppHelper.Window;
+            this.MainWindow = WinMsg.Window;
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
-        }
-
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Exception exp = (Exception)e.ExceptionObject;
-            MessageBox.Show(exp.Message);
         }
     }
 }

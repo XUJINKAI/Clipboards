@@ -21,6 +21,8 @@
             <Button Content="Clear" Click="Clear"></Button>
             <Button Content="Save" Click="Save"></Button>
             <CheckBox IsChecked="{Binding Topmost}" Content="Topmost"></CheckBox>
+            <Button Content="UI State" Click="GetUiState"></Button>
+            <Button Content="Test" Click="Test"></Button>
         </StackPanel>
         <ListView x:Name="ClipboardsListView" Grid.Row="1">
             <ListView.Resources>

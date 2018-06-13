@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 using XJK;
-using XJK.MethodWrapper;
+using XJK.AOP;
 
 namespace UWPUI
 {
@@ -40,8 +40,6 @@ namespace UWPUI
 
         public async void Init()
         {
-            Log.Prefix = "[ClipboardsUwp]";
-            Log.AutoFlush = true;
             await AppServiceInvoker.EnsureConnectedAsync();
         }
 
@@ -102,6 +100,11 @@ namespace UWPUI
                 ClipboardContents.AddNew(x, 0);
             }
             return Task.FromResult<Object>(null);
+        }
+
+        public Task<bool> UiShowed()
+        {
+            return Task.FromResult(App.UiLaunched);
         }
     }
 }

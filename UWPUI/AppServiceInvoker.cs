@@ -9,15 +9,15 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using XJK;
-using XJK.CommunicationModel;
-using XJK.MethodWrapper;
+using XJK.AOP;
+using XJK.AOP.CommunicationModel;
 
 namespace UWPUI
 {
     public class AppServiceInvoker : AppServiceCommBase
     {
         public static AppServiceInvoker Current = new AppServiceInvoker();
-        public static IClient Client => UWPUI.Client.Current;
+        public static Client Client => UWPUI.Client.Current;
 
         public bool AutoLaunchProcess { get; set; } = false;
 
@@ -44,28 +44,41 @@ namespace UWPUI
             OnConnectionClosed(Connection, AppServiceClosedStatus.Canceled);
         }
         
-        protected override async void OnConnectionClosed(AppServiceConnection sender, AppServiceClosedStatus status)
+        protected override void OnConnectionClosed(AppServiceConnection sender, AppServiceClosedStatus status)
         {
+            AppServiceDeferral.Complete();
             base.OnConnectionClosed(sender, status);
-            if (AutoLaunchProcess)
-            {
-                await LaunchBackgroundProcessAsync();
-            }
+            RetryConnectDialog();
         }
 
-        protected override async Task BeforeSendMessage(MethodCallInfo methodCallInfo)
+        public void RetryConnectDialog()
         {
-            await base.BeforeSendMessage(methodCallInfo);
             if (!IsConnceted())
             {
-                var msg = new MessageDialog("Not Connected");
-                msg.Commands.Add(new UICommand("Retry", new UICommandInvokedHandler(async(IUICommand command) =>
+                DispatchInvoke(async () =>
                 {
-                    await LaunchBackgroundProcessAsync();
-                })));
+                    var msg = new MessageDialog("Not Connected");
+                    msg.Commands.Add(new UICommand("Retry", new UICommandInvokedHandler(async (IUICommand command) =>
+                    {
+                        await EnsureConnectedAsync();
+                    })));
+                    msg.Commands.Add(new UICommand("Exit", new UICommandInvokedHandler((IUICommand command) =>
+                    {
+                        Client.ExitBackground();
+                    })));
+                    await msg.ShowAsync();
+                });
             }
         }
 
+        public override void BeforeInvoke(object sender, BeforeInvokeEventArgs args)
+        {
+            if (!IsConnceted())
+            {
+                RetryConnectDialog();
+            }
+        }
+        
         protected override async void DispatchInvoke(Action action)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=> { action(); });
@@ -80,16 +93,8 @@ namespace UWPUI
         {
             if (Current.AutoLaunchProcess && !Current.IsConnceted())
             {
-                Log.Debug("LaunchBackgroundProcessAsync start");
-                await LaunchBackgroundProcessAsync();
-                Log.Debug("LaunchBackgroundProcessAsync end");
+                await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
             }
         }
-
-        public static async Task LaunchBackgroundProcessAsync()
-        {
-            await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
-        }
-
     }
 }

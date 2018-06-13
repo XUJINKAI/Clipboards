@@ -116,7 +116,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AppHelper.cs" />
     <Compile Include="AppServiceInvoker.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="Clipboards.cs" />
@@ -164,6 +163,10 @@
     <ProjectReference Include="..\..\XJKdotNetLibrary\dotNetFramework\SysX\SysX.csproj">
       <Project>{bfabdd52-f228-490d-a7cf-c019df252d5b}</Project>
       <Name>SysX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\dotNetFramework\WPF\WPF.csproj">
+      <Project>{e91d5857-d99b-4825-bae8-5cf06c706a3d}</Project>
+      <Name>WPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{667e86ac-4249-4953-8334-7747746769ed}</Project>

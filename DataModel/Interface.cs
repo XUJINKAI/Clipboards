@@ -8,6 +8,7 @@ namespace DataModel
     public interface IClient
     {
         Task ClipboardCollectionChange(List<ClipboardItem> addItems, List<ClipboardItem> removeItems);
+        Task<bool> UiShowed();
     }
 
     public interface IService

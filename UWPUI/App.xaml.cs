@@ -14,6 +14,8 @@ namespace UWPUI
     /// </summary>
     sealed partial class App : Application
     {
+        public static bool UiLaunched { get; private set; } = false;
+
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -21,10 +23,10 @@ namespace UWPUI
         public App()
         {
             this.InitializeComponent();
+            Log.ListenSystemDiagnosticsLog();
             this.Suspending += OnSuspending;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.UnhandledException += App_UnhandledException;
-            Log.DebugConsoleOutput = true;
             Client.Current.Init();
         }
         
@@ -62,6 +64,7 @@ namespace UWPUI
                     rootFrame.Navigate(typeof(MainPage));
                 }
             }
+            UiLaunched = true;
             Window.Current.Activate();
         }
         
@@ -101,6 +104,7 @@ namespace UWPUI
                     // 参数
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
+                UiLaunched = true;
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
             }

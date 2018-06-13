@@ -9,9 +9,10 @@ using System.Xml;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using XJK;
-using XJK.MethodWrapper;
+using XJK.AOP;
 using XJK.Serializers;
 using XJK.SysX;
+using XJK.WPF;
 
 namespace WpfBackground
 {
@@ -40,7 +41,7 @@ namespace WpfBackground
             LoadSetting();
             AppServiceInvoker = new AppServiceInvoker(appservername, packagefamilyname, Current);
             ClientProxy = MethodProxy.CreateProxy<IClient>(AppServiceInvoker);
-            Log.Prefix = $"[{Handle.ModuleHandleHex}]";
+            Log.ModuleId = ENV.ModuleHandleHex;
         }
         
         public static void LoadSetting()
@@ -49,18 +50,19 @@ namespace WpfBackground
             {
                 try
                 {
-                    Setting = XmlSerialization.ReadXmlFile<Setting>(App.SettingXmlFilePath);
+                    string xml = FS.ReadAllText(App.SettingXmlFilePath);
+                    Setting = XmlSerialization.FromXmlText<Setting>(xml);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("LoadSetting", ex);
+                    Log.Error(ex);
                 }
             }
         }
 
         public static void WriteSetting()
         {
-            XmlSerialization.WriteXmlFile(Setting, App.SettingXmlFilePath);
+            Setting.ToXmlText().WriteToAll(App.SettingXmlFilePath);
         }
 
         public void Dispose()
@@ -80,7 +82,7 @@ namespace WpfBackground
         public Task Shutdown()
         {
             WriteDataFile();
-            AppHelper.DisposeHelperWindow();
+            WinMsg.DisposeHelperWindow();
             App.Current.Shutdown();
             return Task.FromResult<object>(null);
         }

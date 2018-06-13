@@ -101,7 +101,8 @@ namespace WpfBackground
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("LoadClipboardsFile: Parse Clipboards XML Error", ex);
+                    Log.Write("Parse Clipboards XML Error");
+                    Log.Error(ex);
                 }
             }
             if (Contents == null)
@@ -113,7 +114,7 @@ namespace WpfBackground
         public static void WriteClipboardsFile()
         {
             var wrapper = new ClipboardWrapper() { Contents = Contents };
-            XmlSerialization.WriteXmlFile(wrapper, _clipboards_file);
+            wrapper.ToXmlText().WriteToAll(_clipboards_file);
         }
 
         private static async void Clipboard_ContentChanged(object sender, object e)
@@ -127,7 +128,7 @@ namespace WpfBackground
                 if (data.Contains(StandardDataFormats.Text))
                 {
                     var text = await data.GetTextAsync();
-                    if (System.Text.ASCIIEncoding.ASCII.GetByteCount(text) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
+                    if (System.Text.Encoding.ASCII.GetByteCount(text) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
                     {
                         return;
                     }
@@ -148,7 +149,7 @@ namespace WpfBackground
                 if (data.Contains(StandardDataFormats.Html))
                 {
                     var x = await data.GetHtmlFormatAsync();
-                    if (System.Text.ASCIIEncoding.ASCII.GetByteCount(x) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
+                    if (System.Text.Encoding.ASCII.GetByteCount(x) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
                     {
                         return;
                     }
@@ -158,7 +159,7 @@ namespace WpfBackground
                 else if(data.Contains(StandardDataFormats.Rtf))
                 {
                     var x = await data.GetRtfAsync();
-                    if (System.Text.ASCIIEncoding.ASCII.GetByteCount(x) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
+                    if (System.Text.Encoding.ASCII.GetByteCount(x) > Service.Setting.ClipboardItemLimitSizeKb * 1024)
                     {
                         return;
                     }

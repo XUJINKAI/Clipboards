@@ -1,5 +1,7 @@
 ﻿using DataModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using XJK;
@@ -16,7 +18,7 @@ namespace WpfBackground
         protected override void OnClosing(CancelEventArgs e)
         {
             Instance = null;
-            Log.AutoStringListener -= Log_AutoStringListener;
+            Log.TextListener -= Log_TextListener;
             Log.AutoFlush = false;
         }
 
@@ -26,14 +28,14 @@ namespace WpfBackground
             {
                 Instance = new WpfWindow();
                 Instance.DataContext = Instance;
-                Log.AutoStringListener += Log_AutoStringListener;
+                Log.TextListener += Log_TextListener;
                 Log.AutoFlush = true;
             }
             Instance.Show();
             Instance.Activate();
         }
 
-        private static void Log_AutoStringListener(string obj)
+        private static void Log_TextListener(string obj)
         {
             Instance.Dispatcher.Invoke(() =>
             {
@@ -71,6 +73,22 @@ namespace WpfBackground
         private void Save(object sender, RoutedEventArgs e)
         {
             Service.Current.WriteDataFile();
+        }
+
+        private async void GetUiState(object sender, RoutedEventArgs e)
+        {
+            var result = await Service.ClientProxy.UiShowed();
+            Debug.WriteLine(result);
+        }
+
+        private void Test(object sender, RoutedEventArgs e)
+        {
+            true.GetType().DefaultValue();
+            1.GetType().DefaultValue();
+            "abc".GetType().DefaultValue();
+            TypeHelper.DefaultValue(null);
+            Task.FromResult<object>(null).GetType().DefaultValue();
+            Task.FromResult<int>(123).GetType().DefaultValue();
         }
     }
 }
