@@ -28,6 +28,7 @@ namespace WpfBackground
         {
             base.OnStartup(e);
             Log.ListenSystemDiagnosticsLog();
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             if (!SingleInstance.IsNewInstance(AppUniqueId))
             {
                 WinMsg.BroadcastMessage(MsgConnectAppService);
@@ -48,6 +49,13 @@ namespace WpfBackground
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception exp = e.ExceptionObject as Exception;
+            Log.Fatal(exp);
+            MessageBox.Show(exp.GetFullMessage());
         }
     }
 }

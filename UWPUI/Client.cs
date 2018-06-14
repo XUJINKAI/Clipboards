@@ -25,13 +25,18 @@ namespace UWPUI
             ClipboardContents = new ClipboardContents();
             ServerProxy = MethodProxy.CreateProxy<IService>(AppServiceInvoker);
             AppServiceInvoker.Connected += AppServiceInvoker_Connected;
-            AppServiceInvoker.AutoLaunchProcess = true;
         }
+
+        private static bool FirstLaunch = true;
 
         private static async void AppServiceInvoker_Connected()
         {
-            await Current.RequestClipboardContentsAsync();
-            await Current.SetTopmostByTitleAsync(true);
+            if (App.UiLaunched && FirstLaunch)
+            {
+                FirstLaunch = false;
+                await Current.SetTopmostByTitleAsync(true);
+                await Current.RequestClipboardContentsAsync();
+            }
         }
 
         private Client()
@@ -51,7 +56,6 @@ namespace UWPUI
         public async void ExitBackground()
         {
             App.Current.Exit();
-            AppServiceInvoker.AutoLaunchProcess = false;
             if (AppServiceInvoker.IsConnceted())
             {
                 await ServerProxy.Shutdown();

@@ -28,7 +28,7 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.appService">
-          <uap3:AppService Name="ClipboardsBackgroundAppService" />
+          <uap3:AppService Name="ClipboardsBackgroundAppService" SupportsRemoteSystems="false" />
         </uap:Extension>
         <uap:Extension Category="windows.protocol" Executable="UWPUI.exe" EntryPoint="UWPUI.App">
           <uap:Protocol Name="clipboards" />

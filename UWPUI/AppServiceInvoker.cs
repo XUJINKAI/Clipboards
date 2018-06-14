@@ -17,11 +17,9 @@ namespace UWPUI
     public class AppServiceInvoker : AppServiceCommBase
     {
         public static AppServiceInvoker Current = new AppServiceInvoker();
-        public static Client Client => UWPUI.Client.Current;
-
-        public bool AutoLaunchProcess { get; set; } = false;
-
-        private BackgroundTaskDeferral AppServiceDeferral = null;
+        public static Client Client => Client.Current;
+        
+        private static BackgroundTaskDeferral AppServiceDeferral = null;
 
         private AppServiceInvoker() { }
         
@@ -41,13 +39,13 @@ namespace UWPUI
 
         private void OnAppServiceCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
-            OnConnectionClosed(Connection, AppServiceClosedStatus.Canceled);
+            OnConnectionClosed(AppServiceClosedStatus.Canceled);
         }
         
-        protected override void OnConnectionClosed(AppServiceConnection sender, AppServiceClosedStatus status)
+        protected override void OnConnectionClosed(AppServiceClosedStatus status)
         {
+            base.OnConnectionClosed(status);
             AppServiceDeferral.Complete();
-            base.OnConnectionClosed(sender, status);
             RetryConnectDialog();
         }
 
@@ -91,7 +89,7 @@ namespace UWPUI
 
         public static async Task EnsureConnectedAsync()
         {
-            if (Current.AutoLaunchProcess && !Current.IsConnceted())
+            if (!Current.IsConnceted())
             {
                 await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
             }

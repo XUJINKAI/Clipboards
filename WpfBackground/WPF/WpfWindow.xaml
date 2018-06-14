@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfBackground"
         mc:Ignorable="d"
         Topmost="False"
-        Title="MainWindow" Height="450" Width="1000">
+        Title="MainWindow" Height="450" Width="1500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
@@ -21,6 +21,7 @@
             <Button Content="Clear" Click="Clear"></Button>
             <Button Content="Save" Click="Save"></Button>
             <CheckBox IsChecked="{Binding Topmost}" Content="Topmost"></CheckBox>
+            <Button Content="Connect" Click="Connect"></Button>
             <Button Content="UI State" Click="GetUiState"></Button>
             <Button Content="Test" Click="Test"></Button>
         </StackPanel>
@@ -44,7 +45,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="LogTextBox" Grid.Row="1" Grid.Column="1">
+        <TextBox x:Name="LogTextBox" Grid.Row="1" Grid.Column="1" FontFamily="Consolas">
             
         </TextBox>
     </Grid>
