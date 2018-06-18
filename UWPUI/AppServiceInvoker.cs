@@ -46,7 +46,7 @@ namespace UWPUI
             }
         }
         
-        protected override async void DispatchInvoke(Action action)
+        public override async void DispatchInvoke(Action action)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=> { action(); });
         }

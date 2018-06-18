@@ -26,5 +26,10 @@ namespace UWPUI
         {
             LogTextSpan.Inlines.Add(new Run() { Text = obj });
         }
+
+        private void ClearLogButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            LogTextSpan.Inlines.Clear();
+        }
     }
 }

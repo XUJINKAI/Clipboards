@@ -19,7 +19,6 @@ namespace WpfBackground
         {
             Instance = null;
             Log.TextListener -= Log_TextListener;
-            Log.AutoFlush = false;
         }
 
         public static void ShowWindow()
@@ -78,7 +77,7 @@ namespace WpfBackground
         private async void GetUiState(object sender, RoutedEventArgs e)
         {
             var result = await Service.ClientProxy.UiShowed();
-            Debug.WriteLine(result);
+            Log.Info(result);
         }
 
         private void Test(object sender, RoutedEventArgs e)

@@ -27,21 +27,23 @@ namespace WpfBackground
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Log.ListenSystemDiagnosticsLog();
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             if (!SingleInstance.IsNewInstance(AppUniqueId))
             {
                 WinMsg.BroadcastMessage(MsgConnectAppService);
                 Shutdown();
                 return;
             }
+            Log.AutoFlush = false;
+            Log.ListenSystemDiagnosticsLog();
+            Log.TextListener += Log_TextListener;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             WinMsg.RegisterAutoRestart(() =>
             {
                 Service.Current.Shutdown();
             });
-            WinMsg.RegisterReciveMessage(MsgConnectAppService, () =>
+            WinMsg.RegisterReciveMessage(MsgConnectAppService, async () =>
             {
-                Service.AppServiceInvoker.Connect();
+                await Service.AppServiceInvoker.Connect();
             });
             Clipboards.Init(ClipboardXmlFilePath, ClipboardContentFolder);
             Service.Init(AppServerName, PackageFamilyName);
@@ -49,6 +51,11 @@ namespace WpfBackground
 #if DEBUG
             WpfWindow.ShowWindow();
 #endif
+        }
+
+        private void Log_TextListener(string obj)
+        {
+            Debugger.Log(0, "", obj);
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

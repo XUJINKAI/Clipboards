@@ -20,7 +20,7 @@ namespace WpfBackground
             await Connect();
         }
         
-        protected override void DispatchInvoke(Action action)
+        public override void DispatchInvoke(Action action)
         {
             App.Current.Dispatcher.Invoke(action);
         }

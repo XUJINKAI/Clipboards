@@ -20,7 +20,7 @@
             <NavigationViewItemSeparator/>
             <NavigationViewItem Icon="Cancel" Content="Exit" Tag="Exit"/>
         </NavigationView.MenuItems>
-        <Frame x:Name="rootFrame">
+        <Frame x:Name="rootFrame" FontFamily="Consolas">
         </Frame>
     </NavigationView>
 </Page>

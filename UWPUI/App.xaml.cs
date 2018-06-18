@@ -23,10 +23,10 @@ namespace UWPUI
         public App()
         {
             this.InitializeComponent();
-            Log.ListenSystemDiagnosticsLog();
             this.Suspending += OnSuspending;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             this.UnhandledException += App_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Log.ListenSystemDiagnosticsLog();
             Client.Current.Init();
         }
         

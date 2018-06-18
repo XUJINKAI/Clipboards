@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" IgnorableNamespaces="uap mp rescap desktop">
-  <Identity Name="55774JinkaiXu.57013CAEE6225" Publisher="CN=4E067DC8-EEF0-4BB0-9BF9-483C9CA058ED" Version="1.1.5.0" />
+  <Identity Name="55774JinkaiXu.57013CAEE6225" Publisher="CN=4E067DC8-EEF0-4BB0-9BF9-483C9CA058ED" Version="1.1.8.0" />
   <Properties>
     <DisplayName>Clipboards</DisplayName>
     <PublisherDisplayName>Jinkai Xu</PublisherDisplayName>
@@ -27,8 +27,10 @@
         <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="WpfBackground\WpfBackground.exe" EntryPoint="Windows.FullTrustProcess">
+        </desktop:Extension>
         <uap:Extension Category="windows.appService">
-          <uap3:AppService Name="ClipboardsBackgroundAppService" SupportsRemoteSystems="false" />
+          <uap3:AppService Name="ClipboardsBackgroundAppService" />
         </uap:Extension>
         <uap:Extension Category="windows.protocol" Executable="UWPUI.exe" EntryPoint="UWPUI.App">
           <uap:Protocol Name="clipboards" />
@@ -36,11 +38,6 @@
         <uap3:Extension Category="windows.protocol" Executable="WpfBackground\WpfBackground.exe" EntryPoint="Windows.FullTrustApplication">
           <uap3:Protocol Name="clipboardsbackgroundwpfapp" />
         </uap3:Extension>
-        <desktop:Extension Category="windows.startupTask" Executable="WpfBackground\WpfBackground.exe" EntryPoint="Windows.FullTrustApplication">
-          <desktop:StartupTask TaskId="ClipboardsAppStartupTask" Enabled="true" DisplayName="Clipboards" />
-        </desktop:Extension>
-        <desktop:Extension Category="windows.fullTrustProcess" Executable="WpfBackground\WpfBackground.exe" EntryPoint="Windows.FullTrustProcess">
-        </desktop:Extension>
       </Extensions>
     </Application>
   </Applications>

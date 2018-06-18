@@ -93,17 +93,21 @@ namespace UWPUI
                 }
             }
         }
-        
+
+        #region Interface
         public Task ClipboardCollectionChange(List<ClipboardItem> addItems, List<ClipboardItem> removeItems)
         {
-            foreach (var x in removeItems)
+            AppServiceInvoker.DispatchInvoke(() =>
             {
-                ClipboardContents.Remove(x);
-            }
-            foreach (var x in addItems)
-            {
-                ClipboardContents.AddNew(x, 0);
-            }
+                foreach (var x in removeItems)
+                {
+                    ClipboardContents.Remove(x);
+                }
+                foreach (var x in addItems)
+                {
+                    ClipboardContents.AddNew(x, 0);
+                }
+            });
             return Task.FromResult<Object>(null);
         }
 
@@ -111,5 +115,6 @@ namespace UWPUI
         {
             return Task.FromResult(App.UiLaunched);
         }
+        #endregion
     }
 }
