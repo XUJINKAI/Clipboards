@@ -78,9 +78,9 @@ namespace UWPUI
                 {
                     await EnsureConnectedAsync();
                 })));
-                msg.Commands.Add(new UICommand("Exit", new UICommandInvokedHandler((IUICommand command) =>
+                msg.Commands.Add(new UICommand("Cancel", new UICommandInvokedHandler((IUICommand command) =>
                 {
-                    Client.Current.ExitBackground();
+
                 })));
                 await msg.ShowAsync();
             });

@@ -18,7 +18,7 @@ namespace WpfBackground
         public const string AppUniqueId = "com.xujinkai.clipboards.WpfBackground";
         public const string MsgConnectAppService = AppUniqueId + "_MsgConnectAppService";
 
-        public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         public static readonly string AppDataFolder = FS.CreateFolder(Path.Combine(ApplicationDataSpecialFolder, "Clipboards"));
         public static readonly string SettingXmlFilePath = Path.Combine(AppDataFolder, "Setting.xml");
         public static readonly string ClipboardXmlFilePath = Path.Combine(AppDataFolder, "Clipboards.xml");
@@ -48,9 +48,7 @@ namespace WpfBackground
             Clipboards.Init(ClipboardXmlFilePath, ClipboardContentFolder);
             Service.Init(AppServerName, PackageFamilyName);
             this.MainWindow = WinMsg.Window;
-#if DEBUG
             WpfWindow.ShowWindow();
-#endif
         }
 
         private void Log_TextListener(string obj)

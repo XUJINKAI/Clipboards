@@ -17,6 +17,7 @@
         </Grid.RowDefinitions>
 
         <CommandBar Background="Transparent">
+            <AppBarButton Icon="Admin" Label="TEST" Click="TEST_Click"/>
             <AppBarButton x:Name="TopmostButton" Icon="UnPin" Label="Topmost" Click="TopmostButton_Click"/>
             <AppBarSeparator></AppBarSeparator>
             <AppBarButton Icon="Refresh" Label="Refresh" Click="GetList"></AppBarButton>

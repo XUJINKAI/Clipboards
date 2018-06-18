@@ -40,7 +40,7 @@ namespace WpfBackground
             Current = new Service();
             LoadSetting();
             AppServiceInvoker = new AppServiceInvoker(packagefamilyname, appservername);
-            Task.Run(async () => { await AppServiceInvoker.Connect(); });
+            //Task.Run(async () => { await AppServiceInvoker.Connect(); });
             ClientProxy = MethodProxy.CreateProxy<IClient>(AppServiceInvoker);
             Log.ModuleId = ENV.ModuleHandleHex;
         }
@@ -57,6 +57,7 @@ namespace WpfBackground
                 catch (Exception ex)
                 {
                     Log.Error(ex);
+                    Setting = new Setting();
                 }
             }
         }
@@ -106,7 +107,7 @@ namespace WpfBackground
             AppServiceInvoker.DispatchInvoke(() =>
             {
                 WriteDataFile();
-                WinMsg.DisposeHelperWindow();
+                //WinMsg.DisposeHelperWindow();
                 App.Current.Shutdown();
             });
             return Task.CompletedTask;

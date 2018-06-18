@@ -18,6 +18,7 @@ namespace UWPUI
         public LogPage()
         {
             this.InitializeComponent();
+            Log.AutoFlush = true;
             Log.TextListener += Log_AutoStringListener;
             LogTextSpan.Inlines.Add(new Run() { Text = Log.AllCachesText });
         }

@@ -27,6 +27,7 @@ namespace UWPUI
             this.UnhandledException += App_UnhandledException;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Log.ListenSystemDiagnosticsLog();
+            Log.AutoFlush = false;
             Client.Current.Init();
         }
         

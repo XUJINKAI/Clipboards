@@ -1,4 +1,5 @@
 ﻿using DataModel;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -15,10 +16,11 @@ namespace WpfBackground
     {
         public static WpfWindow Instance = null;
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override void OnClosed(EventArgs e)
         {
-            Instance = null;
             Log.TextListener -= Log_TextListener;
+            Instance = null;
+            base.OnClosed(e);
         }
 
         public static void ShowWindow()

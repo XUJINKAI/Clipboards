@@ -35,8 +35,8 @@ namespace UWPUI
             if (App.UiLaunched && FirstLaunch)
             {
                 FirstLaunch = false;
-                await Current.SetTopmostByTitleAsync(true);
-                await Current.RequestClipboardContentsAsync();
+                //await Current.SetTopmostByTitleAsync(true);
+                //await Current.RequestClipboardContentsAsync();
             }
         }
 
@@ -46,7 +46,7 @@ namespace UWPUI
 
         public async void Init()
         {
-            await AppServiceInvoker.EnsureConnectedAsync();
+            //await AppServiceInvoker.EnsureConnectedAsync();
         }
 
         public static async Task ShowMsgAsync(string msg)
@@ -97,6 +97,7 @@ namespace UWPUI
         #region Interface
         public Task ClipboardCollectionChange(List<ClipboardItem> addItems, List<ClipboardItem> removeItems)
         {
+            if(App.UiLaunched)
             AppServiceInvoker.DispatchInvoke(() =>
             {
                 foreach (var x in removeItems)

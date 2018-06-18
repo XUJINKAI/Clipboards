@@ -81,5 +81,10 @@ namespace UWPUI
         {
             await Client.ServerProxy.WriteDataFile();
         }
+
+        private async void TEST_Click(object sender, RoutedEventArgs e)
+        {
+            await Client.AppServiceInvoker.EnsureConnectedAsync();
+        }
     }
 }
