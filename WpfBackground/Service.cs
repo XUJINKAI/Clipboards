@@ -39,7 +39,8 @@ namespace WpfBackground
         {
             Current = new Service();
             LoadSetting();
-            AppServiceInvoker = new AppServiceInvoker(appservername, packagefamilyname, Current);
+            AppServiceInvoker = new AppServiceInvoker(packagefamilyname, appservername);
+            Task.Run(async () => { await AppServiceInvoker.Connect(); });
             ClientProxy = MethodProxy.CreateProxy<IClient>(AppServiceInvoker);
             Log.ModuleId = ENV.ModuleHandleHex;
         }

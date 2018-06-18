@@ -43,7 +43,7 @@ namespace UWPUI
         //
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
-            AppServiceInvoker.Current.OnBackgroundActivated(args);
+            Client.AppServiceInvoker.OnBackgroundActivated(args);
         }
         
         // launch by protocol

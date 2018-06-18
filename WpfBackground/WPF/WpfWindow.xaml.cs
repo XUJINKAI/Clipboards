@@ -91,9 +91,9 @@ namespace WpfBackground
             Task.FromResult<int>(123).GetType().DefaultValue();
         }
 
-        private void Connect(object sender, RoutedEventArgs e)
+        private async void Connect(object sender, RoutedEventArgs e)
         {
-            Service.AppServiceInvoker.TryConnect();
+            await Service.AppServiceInvoker.Connect();
         }
     }
 }

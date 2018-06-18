@@ -10,70 +10,39 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using XJK;
 using XJK.AOP;
-using XJK.AOP.CommunicationModel;
+using XJK.AOP.AppServiceRpc;
 
 namespace UWPUI
 {
-    public class AppServiceInvoker : AppServiceCommBase
+    public class AppServiceInvoker : AppServiceBase
     {
-        public static AppServiceInvoker Current = new AppServiceInvoker();
-        public static Client Client => Client.Current;
-        
-        private static BackgroundTaskDeferral AppServiceDeferral = null;
-
-        private AppServiceInvoker() { }
-        
+        private BackgroundTaskDeferral AppServiceDeferral = null;
 
         public void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
             if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails)
             {
                 AppServiceDeferral = args.TaskInstance.GetDeferral();
-                args.TaskInstance.Canceled += OnAppServiceCanceled;
+                args.TaskInstance.Canceled += TaskInstance_Canceled;
                 if (args.TaskInstance.TriggerDetails is AppServiceTriggerDetails details)
                 {
                     Connection = details.AppServiceConnection;
+                    Log.Info("Connected [OnBackgroundActivated]");
                 }
             }
         }
 
-        private void OnAppServiceCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
+        private void TaskInstance_Canceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             OnConnectionClosed(AppServiceClosedStatus.Canceled);
         }
-        
+
         protected override void OnConnectionClosed(AppServiceClosedStatus status)
         {
             base.OnConnectionClosed(status);
-            AppServiceDeferral.Complete();
-            RetryConnectDialog();
-        }
-
-        public void RetryConnectDialog()
-        {
-            if (!IsConnceted())
+            if (!App.UiLaunched)
             {
-                DispatchInvoke(async () =>
-                {
-                    var msg = new MessageDialog("Not Connected");
-                    msg.Commands.Add(new UICommand("Retry", new UICommandInvokedHandler(async (IUICommand command) =>
-                    {
-                        await EnsureConnectedAsync();
-                    })));
-                    msg.Commands.Add(new UICommand("Exit", new UICommandInvokedHandler((IUICommand command) =>
-                    {
-                        Client.ExitBackground();
-                    })));
-                    await msg.ShowAsync();
-                });
-            }
-        }
-
-        public override void BeforeInvoke(object sender, BeforeInvokeEventArgs args)
-        {
-            if (!IsConnceted())
-            {
-                RetryConnectDialog();
+                AppServiceDeferral.Complete();
             }
         }
         
@@ -84,15 +53,37 @@ namespace UWPUI
 
         protected override object GetExcuteObject()
         {
-            return Client;
+            return Client.Current;
         }
 
-        public static async Task EnsureConnectedAsync()
+        public async Task EnsureConnectedAsync()
         {
-            if (!Current.IsConnceted())
+            if (!IsConnceted())
             {
                 await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync();
             }
+        }
+
+        protected override void OnInvokeNoConnection()
+        {
+            RetryDialog();
+        }
+
+        protected void RetryDialog()
+        {
+            DispatchInvoke(async () =>
+            {
+                var msg = new MessageDialog("Not Connected");
+                msg.Commands.Add(new UICommand("Retry", new UICommandInvokedHandler(async (IUICommand command) =>
+                {
+                    await EnsureConnectedAsync();
+                })));
+                msg.Commands.Add(new UICommand("Exit", new UICommandInvokedHandler((IUICommand command) =>
+                {
+                    Client.Current.ExitBackground();
+                })));
+                await msg.ShowAsync();
+            });
         }
     }
 }

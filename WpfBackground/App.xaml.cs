@@ -41,7 +41,7 @@ namespace WpfBackground
             });
             WinMsg.RegisterReciveMessage(MsgConnectAppService, () =>
             {
-                Service.AppServiceInvoker.TryConnect();
+                Service.AppServiceInvoker.Connect();
             });
             Clipboards.Init(ClipboardXmlFilePath, ClipboardContentFolder);
             Service.Init(AppServerName, PackageFamilyName);

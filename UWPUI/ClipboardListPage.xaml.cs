@@ -20,7 +20,7 @@ namespace UWPUI
             this.InitializeComponent();
             Client.Current.TopmostChanged += Current_TopmostChanged;
             UpdateTopmostSymbolIcon();
-            ClipboardListView.ItemsSource = Client.ClipboardContents;
+            //ClipboardListView.ItemsSource = Client.ClipboardContents;
         }
 
         private async void CopySelect(object sender, RoutedEventArgs e)

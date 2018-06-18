@@ -11,8 +11,8 @@ namespace UWPUI
     public class Client : IClient
     {
         public readonly static Client Current;
+        public static AppServiceInvoker AppServiceInvoker;
         public static IService ServerProxy;
-        public static AppServiceInvoker AppServiceInvoker => AppServiceInvoker.Current;
 
         public readonly static ClipboardContents ClipboardContents;
         
@@ -21,10 +21,11 @@ namespace UWPUI
 
         static Client()
         {
-            Current = new Client();
-            ClipboardContents = new ClipboardContents();
-            ServerProxy = MethodProxy.CreateProxy<IService>(AppServiceInvoker);
+            AppServiceInvoker = new AppServiceInvoker();
             AppServiceInvoker.Connected += AppServiceInvoker_Connected;
+            Current = new Client();
+            ServerProxy = MethodProxy.CreateProxy<IService>(AppServiceInvoker);
+            ClipboardContents = new ClipboardContents();
         }
 
         private static bool FirstLaunch = true;
