@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataModel
@@ -8,13 +7,10 @@ namespace DataModel
     public interface IClient
     {
         Task ClipboardCollectionChange(List<ClipboardItem> addItems, List<ClipboardItem> removeItems);
-        Task<bool> UiShowed();
     }
 
     public interface IService
     {
-        Task<bool> SetTopmost(bool topmost);
-        Task<bool> SetTopmostByTitle(string Title, bool topmost);
         Task ShowUwpWindow();
         Task Shutdown();
         Task WriteDataFile();
@@ -24,7 +20,7 @@ namespace DataModel
 
         Task SetClipboard(ClipboardItem clipboardItem);
         Task SetClipboard(List<ClipboardItem> list);
-        Task<ClipboardContents> GetClipboardContents();
+        Task<ClipboardWrapper> GetClipboardWrapper();
         Task<bool> ClearClipboardList();
     }
 }
