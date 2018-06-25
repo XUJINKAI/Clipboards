@@ -80,6 +80,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Reflection.DispatchProxy, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.DispatchProxy.4.5.1\lib\net461\System.Reflection.DispatchProxy.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETCore\v4.5\System.Runtime.WindowsRuntime.dll</HintPath>
@@ -142,6 +145,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -151,6 +155,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\AOP\AOP.csproj">
+      <Project>{7f1185c6-c51e-4292-a5f1-c9eebf8d17a4}</Project>
+      <Name>AOP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\XJKdotNetLibrary\Common\Common.csproj">
       <Project>{59101c58-4917-4337-9e80-95cb9e45e200}</Project>
       <Name>Common</Name>
@@ -158,6 +166,10 @@
     <ProjectReference Include="..\..\XJKdotNetLibrary\dotNetFramework\WPF\WPF.csproj">
       <Project>{e91d5857-d99b-4825-bae8-5cf06c706a3d}</Project>
       <Name>WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\XJKdotNetLibrary\Network\Network.csproj">
+      <Project>{f192ba6d-a1ba-4bb1-a92c-b41fbe0475ff}</Project>
+      <Name>Network</Name>
     </ProjectReference>
     <ProjectReference Include="..\DataModel\DataModel.csproj">
       <Project>{045f7ba5-1a37-4845-b171-99abcab05d44}</Project>
