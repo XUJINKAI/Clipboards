@@ -11,7 +11,7 @@ namespace DataModel
 
     public interface IService
     {
-        Task ShowUwpWindow();
+        Task ShowWpfWindow();
         Task Shutdown();
         Task WriteDataFile();
 

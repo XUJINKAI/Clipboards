@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfService.Model;
 using XJK;
+using XJK.Serializers;
 
 namespace WpfService
 {
@@ -144,5 +146,16 @@ namespace WpfService
             Controller.ReadSettingFile();
         }
 
+        private void ShowUwpUI(object sender, RoutedEventArgs e)
+        {
+            Controller.Instance.ShowUwpUI();
+        }
+
+        private void DebuggerBreak(object sender, RoutedEventArgs e)
+        {
+            var wrapper = Clipboards.Instance.ClipboardWrapper;
+
+            Debugger.Break();
+        }
     }
 }

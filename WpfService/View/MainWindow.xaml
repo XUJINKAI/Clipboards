@@ -29,6 +29,8 @@
                 <CheckBox Content="Topmost" IsChecked="{Binding Topmost}"></CheckBox>
                 <CheckBox Content="Log" IsChecked="{Binding IsLogging}"></CheckBox>
             </StackPanel>
+            <Button Content="UwpUI" Click="ShowUwpUI"></Button>
+            <Button Content="Break" Click="DebuggerBreak"></Button>
         </ToolBar>
 
         <TabControl Grid.Row="1">

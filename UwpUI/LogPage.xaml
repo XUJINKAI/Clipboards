@@ -1,0 +1,29 @@
+﻿<Page
+    x:Class="UwpUI.LogPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <CommandBar Background="Transparent">
+            <AppBarButton x:Name="ClearLogButton" Icon="Clear" Label="Clear" Click="ClearLogButton_Click"/>
+        </CommandBar>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+            <TextBlock Margin="20" TextWrapping="NoWrap" IsTextSelectionEnabled="True">
+                <Span x:Name="LogTextSpan">
+                    
+                </Span>
+            </TextBlock>
+        </ScrollViewer>
+    </Grid>
+</Page>

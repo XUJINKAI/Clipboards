@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfService.Model;
 using XJK;
 using XJK.AOP;
@@ -16,11 +17,11 @@ using XJK.SysX;
 
 namespace WpfService
 {
-    public class RpcServerProxy : SocketRpcServer
+    public class RpcInvokeProxy : SocketRpcServer
     {
         public int Port { get; private set; }
 
-        public RpcServerProxy(int port)
+        public RpcInvokeProxy(int port)
         {
             Port = port;
             Serve("127.0.0.1", port);
@@ -39,17 +40,21 @@ namespace WpfService
 
     public class Controller : IService
     {
+        public const int DEF_PORT = 9001;
+        public static int Port { get; private set; }
+
         public static IClient ClientProxy { get; private set; }
-        public static RpcServerProxy RpcServerProxy { get; private set; }
+        public static RpcInvokeProxy RpcInvokeProxy { get; private set; }
 
         public static Controller Instance { get; private set; }
 
         static Controller()
         {
             Instance = new Controller();
-            int Port = NetHelper.GetAvailablePort(9000);
-            RpcServerProxy = new RpcServerProxy(Port);
-            ClientProxy = MethodProxy.CreateProxy<IClient>(RpcServerProxy);
+            Port = NetHelper.GetAvailablePort(DEF_PORT);
+            RpcInvokeProxy = new RpcInvokeProxy(Port);
+            ClientProxy = MethodProxy.CreateProxy<IClient>(RpcInvokeProxy);
+            Log.Info($"Listen port {Port}");
         }
 
         private Controller() { }
@@ -66,14 +71,9 @@ namespace WpfService
             return Task.FromResult(Clipboards.Instance.ClipboardWrapper);
         }
 
-        public Task<Setting> GetSetting()
-        {
-            return Task.FromResult(new Setting());
-        }
-
         public Task SetClipboard(ClipboardItem clipboardItem)
         {
-            RpcServerProxy.DispatchInvoke(() =>
+            RpcInvokeProxy.DispatchInvoke(() =>
             {
                 Clipboards.SetClipboard(clipboardItem);
             });
@@ -82,11 +82,16 @@ namespace WpfService
 
         public Task SetClipboard(List<ClipboardItem> list)
         {
-            RpcServerProxy.DispatchInvoke(() =>
+            RpcInvokeProxy.DispatchInvoke(() =>
             {
                 Clipboards.SetClipboard(list);
             });
             return Task.CompletedTask;
+        }
+
+        public Task<Setting> GetSetting()
+        {
+            return Task.FromResult(new Setting());
         }
 
         public Task<bool> SetSetting(Setting setting)
@@ -94,7 +99,7 @@ namespace WpfService
             return Task.FromResult(true);
         }
 
-        public Task ShowUwpWindow()
+        public Task ShowWpfWindow()
         {
             App.Current.MainWindow.Show();
             return Task.CompletedTask;
@@ -102,7 +107,7 @@ namespace WpfService
 
         public Task Shutdown()
         {
-            RpcServerProxy.DispatchInvoke(() =>
+            RpcInvokeProxy.DispatchInvoke(() =>
             {
                 App.Current.Shutdown();
             });
@@ -111,7 +116,7 @@ namespace WpfService
 
         public Task WriteDataFile()
         {
-            RpcServerProxy.DispatchInvoke(() =>
+            RpcInvokeProxy.DispatchInvoke(() =>
             {
                 WriteClipboardsFile();
                 WriteSettingFile();
@@ -175,6 +180,23 @@ namespace WpfService
 
             };
             setting.ToXmlText().WriteToAll(SettingXmlFilePath);
+        }
+
+        public async void ShowUwpUI()
+        {
+            Uri uri = new Uri($"clipboards-uwp-ui://clipboards?port={Port}");
+
+            var success = await Windows.System.Launcher.LaunchUriAsync(uri);
+
+            if (success)
+            {
+                // URI launched
+            }
+            else
+            {
+                MessageBox.Show($"UwpUi Launch fail");
+                await ShowWpfWindow();
+            }
         }
     }
 }

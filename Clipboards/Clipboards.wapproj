@@ -128,6 +128,7 @@
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UwpUI\UwpUI.csproj" />
     <ProjectReference Include="..\WpfService\WpfService.csproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
