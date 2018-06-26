@@ -29,6 +29,9 @@
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="clipboards" />
         </uap:Extension>
+        <uap:Extension Category="windows.protocol" Executable="UwpUI.exe" EntryPoint="UwpUI.app">
+          <uap:Protocol Name="clipboards-uwp-ui" />
+        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="UwpUI.ClipboardListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <CommandBar Background="Transparent">
+            <AppBarButton Icon="Admin" Label="TEST" Click="TEST_Click"/>
+            <AppBarButton x:Name="TopmostButton" Icon="UnPin" Label="Topmost" Click="TopmostButton_Click"/>
+            <AppBarSeparator></AppBarSeparator>
+            <AppBarButton Icon="Refresh" Label="Refresh" Click="RequestList"></AppBarButton>
+            <AppBarButton Icon="Copy" Label="Copy" Click="CopySelect"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Clear" Label="Clear" Click="ClearLists"></AppBarButton>
+                <AppBarSeparator></AppBarSeparator>
+                <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <ListView x:Name="ClipboardListView" Grid.Row="1"
+                          SelectionMode="Multiple">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Tag="{Binding}" DoubleTapped="ClipboardItem_DoubleTapped">
+                        <TextBlock TextWrapping="Wrap">
+                            <Span>
+                                <Run Text="{Binding TextDisplay}"></Run>
+                            </Span>
+                        </TextBlock>
+                        <Image Source="{Binding Image}" MaxHeight="100"></Image>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </Grid>
+</Page>

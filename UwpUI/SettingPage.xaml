@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="UwpUI.SettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="16"></Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"></Setter>
+            <Setter Property="IsTextSelectionEnabled" Value="True"></Setter>
+            <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <StackPanel Margin="20">
+            <TextBlock FontSize="30">Setting</TextBlock>
+            <StackPanel HorizontalAlignment="Left">
+                <TextBox Header="Clipboard Capacity" Text="{Binding Setting.ClipboardCapacity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" LostFocus="SetSetting"></TextBox>
+                <TextBox Header="Clipboard Item Max Size (kb)" Text="{Binding Setting.ClipboardItemLimitSizeKb, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" LostFocus="SetSetting"></TextBox>
+            </StackPanel>
+            <Grid Height="30"></Grid>
+            <TextBlock FontSize="30">About</TextBlock>
+            <TextBlock Visibility="Visible">
+                <Span>
+                    <LineBreak></LineBreak>
+                    <Run>This app shows how UWP and win32 program communicate to each other.</Run>
+                    <LineBreak></LineBreak>
+                    <Run>You can find source code on </Run>
+                    <Hyperlink NavigateUri="https://github.com/xujinkai/clipboards">https://github.com/xujinkai/clipboards</Hyperlink>
+                    <Run>, and welcome PR to this project.</Run>
+                    <LineBreak></LineBreak>
+                </Span>
+            </TextBlock>
+            <TextBox Header="Command Protocol:" Text="clipboards:" IsReadOnly="True"></TextBox>
+            <TextBlock>
+                <Span>
+                    <Run>Use Hotkey tool like </Run>
+                    <Hyperlink NavigateUri="https://www.microsoft.com/store/apps/9pfn5k6qxt46">OneQuick</Hyperlink>
+                    <Run> to launch this app.</Run>
+                    <LineBreak></LineBreak>
+                </Span>
+            </TextBlock>
+            <StackPanel>
+                <TextBlock FontSize="26" Margin="0,10,0,0">Debug</TextBlock>
+                <TextBox Header="PackageFamilyName" x:Name="PackageFamilyNameTextBox" IsReadOnly="True"></TextBox>
+                <Button Click="ShowWpfWindow">Show WPF</Button>
+                <Button Click="SaveData">Save Data</Button>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

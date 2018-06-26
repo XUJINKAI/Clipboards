@@ -9,12 +9,15 @@ using XJK;
 
 namespace DataModel
 {
+    public delegate void CollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e);
+
     [Serializable]
     public class ClipboardWrapper : INotifyPropertyChanged
     {
         private ObservableCollection<ClipboardItem> _contents;
         private ClipboardSetting _setting;
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string Name)
         {
@@ -45,12 +48,7 @@ namespace DataModel
             OnPropertyChanged("Setting");
         }
 
-        public int Count() => Contents.Count();
-        public void Clear() => Contents.Clear();
-        public bool Remove(ClipboardItem item) => Contents.Remove(item);
-        public bool Contains(ClipboardItem item) => Contents.Contains(item);
-
-        public delegate void CollectionChangedHandler(object sender, NotifyCollectionChangedEventArgs e);
+        [field: NonSerialized]
         public event CollectionChangedHandler CollectionChanged;
 
         public ObservableCollection<ClipboardItem> Contents
@@ -69,12 +67,17 @@ namespace DataModel
                 OnPropertyChanged("Contents");
             }
         }
-
+        
         private void _contents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged?.Invoke(sender, e);
             OnPropertyChanged("Contents");
         }
+
+        public int Count() => Contents.Count();
+        public void Clear() => Contents.Clear();
+        public bool Remove(ClipboardItem item) => Contents.Remove(item);
+        public bool Contains(ClipboardItem item) => Contents.Contains(item);
 
         public ClipboardWrapper()
         {
@@ -127,6 +130,7 @@ namespace DataModel
         private int _capacity = 10;
         private int _itemLimitSizeKb = 5000;
 
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string Name)
         {
