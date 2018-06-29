@@ -85,7 +85,6 @@
     <Content Include="Images\LargeTile.scale-150.png" />
     <Content Include="Images\LargeTile.scale-200.png" />
     <Content Include="Images\LargeTile.scale-400.png" />
-    <Content Include="Images\LockScreenLogo.scale-200.png" />
     <Content Include="Images\SmallTile.scale-100.png" />
     <Content Include="Images\SmallTile.scale-125.png" />
     <Content Include="Images\SmallTile.scale-150.png" />
