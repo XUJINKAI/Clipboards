@@ -52,9 +52,20 @@ namespace WpfService
         {
             Instance = new Controller();
             Port = NetHelper.GetAvailablePort(DEF_PORT);
+            SavePort(Port);
             RpcInvokeProxy = new RpcInvokeProxy(Port);
             ClientProxy = MethodProxy.CreateProxy<IClient>(RpcInvokeProxy);
             Log.Info($"Listen port {Port}");
+        }
+
+        private static void SavePort(int port)
+        {
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values["Port"] = port;
+        }
+
+        private static void RemovePort(int port)
+        {
+            Windows.Storage.ApplicationData.Current.LocalSettings.Values.Remove("Port");
         }
 
         private Controller() { }
@@ -127,6 +138,7 @@ namespace WpfService
 
         public static readonly string ApplicationDataSpecialFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         public static readonly string AppDataFolder = FS.CreateFolder(Path.Combine(ApplicationDataSpecialFolder, "Clipboards"));
+        public static readonly string CommXmlFilePath = Path.Combine(AppDataFolder, "comm");
         public static readonly string SettingXmlFilePath = Path.Combine(AppDataFolder, "Setting.xml");
         public static readonly string ClipboardXmlFilePath = Path.Combine(AppDataFolder, "Clipboards.xml");
         public static readonly string ClipboardContentFolder = FS.CreateFolder(Path.Combine(AppDataFolder, "ClipboardContents"));

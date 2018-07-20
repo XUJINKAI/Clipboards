@@ -33,20 +33,15 @@ namespace UwpUI
             this.Suspending += OnSuspending;
             Log.LogLocation = true;
             Log.ListenSystemDiagnosticsLog();
+            Controller.Connect();
         }
-
+        
         // launch by protocol
         protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
             if (args.Kind == ActivationKind.Protocol)
             {
-                ProtocolActivatedEventArgs protocolArgs = (ProtocolActivatedEventArgs)args;
-                WwwFormUrlDecoder decoder = new WwwFormUrlDecoder(protocolArgs.Uri.Query);
-                string s_port = decoder.GetFirstValueByName("port");
-                int.TryParse(s_port, out int port);
-                Controller.Connect(port);
-
                 Frame rootFrame = Window.Current.Content as Frame;
                 if (rootFrame == null)
                 {
@@ -69,8 +64,6 @@ namespace UwpUI
         /// <param name="e">有关启动请求和过程的详细信息。</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            Controller.Connect();
-
             Frame rootFrame = Window.Current.Content as Frame;
 
             // 不要在窗口已包含内容时重复应用程序初始化，
