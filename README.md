@@ -1,6 +1,8 @@
 Clipboards App
 ---
 
+Micorosoft Store: https://www.microsoft.com/store/apps/9ND6WDNB4FW7
+
 - history list
 
 - support text, image, rich text
