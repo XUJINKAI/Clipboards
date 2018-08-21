@@ -3,6 +3,10 @@ Clipboards App
 
 Micorosoft Store: https://www.microsoft.com/store/apps/9ND6WDNB4FW7
 
+中文文档：https://github.com/XUJINKAI/Clipboards/wiki/中文文档
+
+![](docs/screenshot.png)
+
 - history list
 
 - support text, image, rich text
